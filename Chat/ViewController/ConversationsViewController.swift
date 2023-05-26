@@ -1,0 +1,149 @@
+//
+//  ConversationsViewController.swift
+//  Chat
+//
+//  Created by Geetika on 09/05/23.
+//
+
+import UIKit
+
+class UserListCell: UITableViewCell{
+    @IBOutlet weak var messageTime: UILabel!
+    @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var profile: UIImageView!
+    @IBOutlet weak var lastMessage: UILabel!
+}
+class ConversationsViewController: UIViewController {
+
+    @IBOutlet weak var allUser: UIButton!
+    @IBOutlet weak var userList: UITableView!
+    var conversations = [ConversationDetail]()
+    
+    let allUsersInstance = AllUsersViewController()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        userList.delegate = self
+        userList.dataSource = self
+        self.navigationItem.setHidesBackButton(true, animated: true)
+        let titleView = titleOfNavigation()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleView )
+        allUserButtonStyle(button: allUser)
+        
+        Manager.shared.getUserList(){ data in
+            Manager.shared.getConversations(userList: data){ conversationsList in
+               self.conversations = conversationsList
+                print(self.conversations)
+                self.userList.reloadData()
+            }
+            
+        }
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
+        longPress.minimumPressDuration = 1.0
+        userList.addGestureRecognizer(longPress)
+
+    }
+    
+    
+    @IBAction func allUsersButton(_ sender: Any) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "AllUsersViewController") as? AllUsersViewController
+          navigationController?.pushViewController(vc!, animated: true)
+        
+    }
+    @IBAction func logoutButton(_ sender: Any) {
+        var dict = UserDefaults.standard.dictionary(forKey: Keys.defaults)
+        dict?[Keys.isLoggedIn] = false
+        UserDefaults.standard.set(dict, forKey: Keys.defaults)
+        Manager.shared.signout()
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+          navigationController?.pushViewController(vc!, animated: false)
+        
+        
+    }
+    //MARK: long press gesture
+    @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: userList)
+            if let indexPath = userList.indexPathForRow(at: touchPoint) {
+                let conversation = conversations[indexPath.row].conversationId
+                showDeletAlert(conversationID: conversation , index: indexPath.item)
+                
+            }
+        }
+    }
+    
+}
+
+//MARK: view(allUserButton , title)
+extension ConversationsViewController{
+    func allUserButtonStyle(button: UIButton){
+        button.layer.shadowColor = UIColor.darkGray.cgColor
+        button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowRadius = 6.0
+        button.layer.cornerRadius = button.frame.size.width/2
+    }
+    func titleOfNavigation()-> UIView{
+        let label = UILabel()
+        label.layer.frame = CGRect(x: 20, y: 0, width: 30, height: 20)
+        label.textColor = UIColor.white
+        label.text = "Chat"
+        return(label)
+    }
+    
+    func showDeletAlert(conversationID: String, index: Int) {
+        let alert = UIAlertController(title: "", message: Keys.alertMessage,  preferredStyle: UIAlertController.Style.alert)
+
+        alert.addAction(UIAlertAction(title: Keys.cancel, style: UIAlertAction.Style.default, handler: { _ in }))
+        alert.addAction(UIAlertAction(title: Keys.delete,style: UIAlertAction.Style.default,  handler: {(_: UIAlertAction!) in
+                Manager.shared.deleteConversation(converstaionId: conversationID)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    
+}
+
+
+
+ 
+extension ConversationsViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return conversations.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = userList.dequeueReusableCell(withIdentifier: "UserListCell") as? UserListCell else{
+            return UITableViewCell()
+        }
+        let row = conversations[indexPath.row]
+        cell.name.text = row.name
+        cell.lastMessage.text = row.lastMessage
+        if row.profilePicUrl != ""{
+            CommonViews.shared.profileImageStyle(profileImage: cell.profile)
+            cell.profile.kf.setImage(with: URL(string: row.profilePicUrl))
+        }
+        else{
+            cell.profile.image = UIImage(systemName: "person.circle")
+        }
+        let messageTime = Manager.shared.accessTime(time: Double(row.messageTime))
+        cell.messageTime.text = messageTime
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        userList.deselectRow(at: indexPath, animated: true)
+        let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
+        navigationController?.pushViewController(VC!, animated: true)
+        let row = conversations[indexPath.row]
+            VC?.name = row.name
+            VC?.userId = row.uid
+            VC?.roomId = row.conversationId
+
+    }
+}
+
+
+

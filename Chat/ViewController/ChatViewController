@@ -1,0 +1,121 @@
+//
+//  ViewController.swift
+//  Chat
+//
+//  Created by Geetika on 27/04/23.
+//
+
+import UIKit
+import FirebaseDatabase
+import FirebaseAuth
+
+class ContactListCell: UITableViewCell{
+    
+    @IBOutlet weak var profile: UIImageView!
+    @IBOutlet weak var name: UILabel!
+    
+}
+
+class ChatViewController: UIViewController {
+    @IBOutlet weak var contactList: UITableView!
+    
+    let nameList: [String] = []
+    var userDict = [[String: Any]] ()
+
+    var ref : DatabaseReference!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        contactList.delegate = self
+        contactList.dataSource = self
+        self.ref = Database.database().reference()
+        getUserList()
+        self.navigationItem.setHidesBackButton(true, animated: true)
+
+        
+    }
+    
+    @IBAction func logoutButton(_ sender: Any) {
+        do{
+            try Auth.auth().signOut()
+        }
+        catch{
+            print(error.localizedDescription)
+        }
+        UserDefaults.standard.set(false, forKey: "isLoggedIn")
+        
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+          navigationController?.pushViewController(vc!, animated: false)
+        
+    }
+    
+    func getUserList(){
+        
+        self.ref.child("Users").getData(completion:  {  error, result in
+          guard error == nil else {
+            print(error!.localizedDescription)
+            return;
+          }
+            if var userdata = result?.value as? [String : Any] {
+                let loggedInUserId = UserDefaults.standard.string(forKey: "uid")
+                
+                // remove current logged in user from user list
+                let isExistKey = userdata.contains(where: {$0.key == loggedInUserId})
+            
+                if isExistKey{
+                    userdata.removeValue(forKey: loggedInUserId!)
+                }
+                
+                for data in  userdata.values {
+                    print(data)
+                    if let userDetail = data as? [String : Any]{
+                        self.userDict.append(userDetail)
+                    }
+                    print("dict is ... ",self.userDict.count)
+                }
+            }
+            self.contactList.reloadData()
+    })
+}
+
+}
+extension ChatViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return userDict.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let listCell = contactList.dequeueReusableCell(withIdentifier: "ContactListCell", for: indexPath) as? ContactListCell else{
+            return UITableViewCell()
+        }
+        if let name = userDict[indexPath.row]["name"] as? String{
+            listCell.name.text = name
+        }
+        return listCell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
+        navigationController?.pushViewController(VC!, animated: true)
+       
+        VC?.userId = userDict[indexPath.row]["uid"] as? String ?? ""
+        // navigation title
+        if let name = userDict[indexPath.row]["name"] as? String{
+            VC?.name = name
+        }
+        
+       
+        
+    }
+    
+}
+
+
+
+
+
