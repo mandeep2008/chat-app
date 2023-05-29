@@ -82,11 +82,19 @@ class Manager{
         
         self.ref.child(Keys.users).getData(completion:  {  error, result in
             guard let values = result?.value, let usersList = values as? [String: Any]  else { return }
-            print(usersList.values)
-        
+            
             var userData = [Users]()
+            
+//            do{
+//                let data = try JSONSerialization.data(withJSONObject: data)
+//                let json = try JSONDecoder().decode(AllUsers.self, from: data)
+//                print(json)
+//            }
+//            catch{
+//                print(error.localizedDescription)
+//            }
+            
             for data in usersList.values{
-                
                 let modelData = Users(json: data as? [String: Any] ?? [:])
                 if modelData.uid != self.auth.currentUser?.uid{
                     userData.append(modelData)
@@ -160,19 +168,15 @@ class Manager{
     
     
     
-    
     //MARK: get data from database
     func readData(roomId: String, completion: @escaping (_ msgArray: [ChatModel])-> Void){
         var msgArray = [ChatModel]()
         self.ref.child(Keys.chats).child(roomId).observe(.childAdded, with: {snapshot in
-            print(snapshot)
             if var snap = snapshot.value as? [String: Any]{
-                print(snap)
-               // snap[Keys.msgId] = snapshot.key
+             snap[Keys.msgId] = snapshot.key
                 let messageData = ChatModel(chatData: snap)
                 msgArray.append(messageData)
             }
-            
             completion(msgArray)
         })
 
@@ -198,8 +202,7 @@ class Manager{
         self.ref.child(Keys.conversations).observeSingleEvent(of: .value, with: {snapshot in
             if snapshot.exists(){
                 if let data = snapshot.value as? [String: Any]{
-                    let chatId = data.keys
-                    
+                    let chatId = data.keys  
                     for i in chatId{
                         if i.contains(currentUser ?? "") && i.contains(selectedUserId){
                             roomId = i
@@ -241,38 +244,25 @@ class Manager{
     }
     
     //MARK: delete message
-    func deleteMessage(conversationId: String,selectedMsgArray: [String], completion: @escaping (_ isDeleted: Bool)-> Void){
+    func deleteMessage(conversationId: String,selectedMsgArray: [ChatModel]){
         let chatRef =  ref.child(Keys.chats).child(conversationId)
-        for messageId in selectedMsgArray{
-            chatRef.child(messageId).observeSingleEvent(of: .value, with: {snap in
-                if let messageData = snap.value as? [String: Any]{
-                    if messageData[Keys.senderId] as! String == self.auth.currentUser?.uid ?? ""{
-                        self.removeMessage(messageId: messageId, messageData: messageData, chatRef: chatRef){ dataRemoved in
-                            completion(dataRemoved ? true : false)
-                        }
+        for message in selectedMsgArray{
+            if message.senderId == self.auth.currentUser?.uid {
+                chatRef.child(message.msgId).removeValue(completionBlock: {error, databaseRef in
+                    guard error == nil else{
+                        return
                     }
-                }
-            })
-           
+                })
+            }
+
         } // for loop end
     }
-    
-    //MARK: remove message from database
-    
-    func removeMessage(messageId: String, messageData: [String: Any], chatRef: DatabaseReference, completion: @escaping (_ dataRemoved: Bool)-> Void){
-        chatRef.child(messageId).removeValue(completionBlock: {error, databaseRef in
-            guard error == nil else{
-                return
-            }
-            completion(true)
-        })
-    }
-
+   
     
     //MARK: update last message in conversations
     
-    func updateConversationLastMessage(messageData: [String: Any], conversationId: String){
-        let dict = [Keys.lastMessage: messageData[Keys.message], Keys.messageTime: messageData[Keys.messageTime]]
+    func updateConversationLastMessage(messageData: ChatModel, conversationId: String){
+        let dict = [Keys.lastMessage: messageData.message, Keys.messageTime: messageData.messageTime] as [String : Any]
         self.ref.child(Keys.conversations).child(conversationId).updateChildValues(dict)
     }
 }

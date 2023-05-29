@@ -32,14 +32,13 @@ class ConversationsViewController: UIViewController {
         Manager.shared.getUserList(){ data in
             Manager.shared.getConversations(userList: data){ conversationsList in
                self.conversations = conversationsList
-                print(self.conversations)
                 self.userList.reloadData()
             }
             
         }
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
-        longPress.minimumPressDuration = 1.0
-        userList.addGestureRecognizer(longPress)
+//        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
+//        longPress.minimumPressDuration = 1.0
+//        userList.addGestureRecognizer(longPress)
 
     }
     
@@ -50,15 +49,10 @@ class ConversationsViewController: UIViewController {
         
     }
     @IBAction func logoutButton(_ sender: Any) {
-        var dict = UserDefaults.standard.dictionary(forKey: Keys.defaults)
-        dict?[Keys.isLoggedIn] = false
-        UserDefaults.standard.set(dict, forKey: Keys.defaults)
-        Manager.shared.signout()
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
-          navigationController?.pushViewController(vc!, animated: false)
-        
-        
+        showLogoutAlert()
+          
     }
+    
     //MARK: long press gesture
     @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
@@ -99,6 +93,20 @@ extension ConversationsViewController{
             }))
             self.present(alert, animated: true, completion: nil)
         }
+    
+    func showLogoutAlert(){
+        let alert = UIAlertController(title: "", message: "Do you want to logout", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+            var dict = UserDefaults.standard.dictionary(forKey: Keys.defaults)
+            dict?[Keys.isLoggedIn] = false
+            UserDefaults.standard.set(dict, forKey: Keys.defaults)
+            Manager.shared.signout()
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+            self.navigationController?.pushViewController(vc!, animated: false)
+        }))
+        self.present(alert, animated: true)
+    }
     
 }
 
@@ -141,7 +149,17 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
             VC?.name = row.name
             VC?.userId = row.uid
             VC?.roomId = row.conversationId
-
+        }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
+                   completionHandler(true)
+               }
+        
+               deleteAction.image = UIImage(systemName: "trash")
+              // deleteAction.backgroundColor = .systemGreen
+               let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+               return configuration
     }
 }
 

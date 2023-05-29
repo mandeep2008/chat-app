@@ -40,7 +40,12 @@ struct Users {
 }
 
 
-
+struct AllUsers: Codable{
+    var name: String?
+    var email: String?
+    var uid: String?
+    var profilePicUrl: String?
+}
 
 
 

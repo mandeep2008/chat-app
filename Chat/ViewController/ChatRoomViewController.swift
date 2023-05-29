@@ -11,7 +11,9 @@ import FirebaseAuth
 
 class ChatRoomViewController: UIViewController {
 
-   
+    @IBOutlet weak var textfieldBottomConstraints: NSLayoutConstraint!
+    
+    @IBOutlet weak var bottomConstraints: NSLayoutConstraint!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var chatMsgList: UITableView!
     var msgArray = [ChatModel]()
@@ -20,7 +22,7 @@ class ChatRoomViewController: UIViewController {
     var userId = ""
     var roomId = ""
     var sendMessageTime  = Int64()
-    var selectedMsgId = [String]()
+    var selectedMsgId = [ChatModel]()
     var selectionEnable = false
     
     
@@ -34,11 +36,10 @@ class ChatRoomViewController: UIViewController {
         Manager.shared.readData(roomId: self.roomId){ data in
             self.msgArray = data
             self.chatMsgList.reloadData()
-
+               self.bottomScroll()
+                self.scrollToBottom()
         }
-        //   self.bottomScroll()
-          //  self.scrollToBottom()
-
+        
 
         // keyboard settings
             NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -80,7 +81,6 @@ class ChatRoomViewController: UIViewController {
         let cancelButton =  UIBarButtonItem(title: Keys.cancel, style: .plain, target: self, action: #selector(cancelButton))
         let deleteButton =  UIBarButtonItem(title: Keys.delete, style: .plain, target: self, action: #selector(DeleteButton))
         navigationItem.rightBarButtonItems = [cancelButton, deleteButton]
-
                 self.chatMsgList.reloadData()
     }
     
@@ -89,7 +89,7 @@ class ChatRoomViewController: UIViewController {
     func scrollToBottom(){
         DispatchQueue.main.async {
            let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
-           self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
     
@@ -111,32 +111,26 @@ extension ChatRoomViewController{
     }
     //MARK: Delete Button
     @objc func DeleteButton(){
-        Manager.shared.deleteMessage(conversationId: roomId, selectedMsgArray: selectedMsgId){ isDeleted in
-            if isDeleted{
+        Manager.shared.deleteMessage(conversationId: roomId, selectedMsgArray: selectedMsgId)
                 self.navigationItem.rightBarButtonItems = nil
-                self.messageDeleteAlert()
-                self.chatMsgList.reloadData()
-                
-            }
-        }
+                self.deleteMessage()
     }
     
     //MARK: show alert
-    
-    func messageDeleteAlert(){
-        let alert = UIAlertController(title: "", message: Keys.messageDeleted, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: Keys.ok, style: UIAlertAction.Style.default, handler: { _ in
-            self.selectionEnable = false
-//            for i in self.selectedMsgId{
-//                self.msgArray.removeAll(where: {$0.msgId == i})
-//            }
-          
-          //  Manager.shared.updateConversationLastMessage(messageData: self.msgArray, conversationId: self.roomId)
-            self.selectedMsgId = []
-            self.chatMsgList.reloadData()
-            
-        }))
-        self.present(alert, animated: true, completion: nil)
+    func deleteMessage(){
+        self.selectionEnable = false
+        for i in self.selectedMsgId{
+            self.msgArray.removeAll(where: {$0.msgId == i.msgId})
+        }
+       let lastMessage =  self.msgArray.last
+        if lastMessage != nil {
+            Manager.shared.updateConversationLastMessage(messageData: lastMessage!, conversationId: self.roomId)
+        }
+        else{
+            Manager.shared.deleteConversation(converstaionId: self.roomId)
+        }
+        self.selectedMsgId = []
+        self.chatMsgList.reloadData()
     }
 }
 
@@ -161,9 +155,9 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         cell.checkBox.isHidden = selectionEnable ? false : true
        
         cell.contentView.addGestureRecognizer(longPress)
-//        let msgId = ((msgArray[indexPath.row] as AnyObject).value(forKey: Keys.msgId) ?? "") as? String ?? ""
-//        cell.checkBox.image = selectedMsgId.contains(msgId) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
-//
+        let msgId = msgArray[indexPath.row].msgId
+        cell.checkBox.image = selectedMsgId.contains(where: {$0.msgId == msgId} ) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
+
         cell.updateBubblePosition(senderId: row.senderId, selectionEnable: selectionEnable)
 
         return cell
@@ -180,12 +174,12 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard self.selectionEnable == true else {return}
-//        if self.selectedMsgId.contains(self.msgArray[indexPath.row].msgId) {
-//            guard let indexOfId = selectedMsgId.firstIndex(of: self.msgArray[indexPath.row].msgId) else { return }
-//            selectedMsgId.remove(at: indexOfId)
-//        } else {
-//            self.selectedMsgId.append(self.msgArray[indexPath.row].msgId)
-//        }
+        if self.selectedMsgId.contains(where: {$0.msgId == self.msgArray[indexPath.row].msgId}) {
+            guard let index = selectedMsgId.firstIndex(where: { $0.msgId == self.msgArray[indexPath.row].msgId}) else { return}
+            selectedMsgId.remove(at: index)
+        } else {
+            self.selectedMsgId.append(self.msgArray[indexPath.row])
+        }
         self.chatMsgList.reloadData()
     }
     
@@ -200,16 +194,13 @@ extension ChatRoomViewController{
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
            return
         }
-      self.view.frame.origin.y = 0 - keyboardSize.height
+        self.textfieldBottomConstraints.constant = -keyboardSize.height
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-      self.view.frame.origin.y = 0
+        self.textfieldBottomConstraints.constant = 0
     }
     
-    @objc func dismissKeyboard(){
-        view.endEditing(true)
-    }
 }
 
 extension Date {
