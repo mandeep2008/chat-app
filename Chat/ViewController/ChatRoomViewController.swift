@@ -13,7 +13,6 @@ class ChatRoomViewController: UIViewController {
 
     @IBOutlet weak var textfieldBottomConstraints: NSLayoutConstraint!
     
-    @IBOutlet weak var bottomConstraints: NSLayoutConstraint!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var chatMsgList: UITableView!
     var msgArray = [ChatModel]()
@@ -88,8 +87,9 @@ class ChatRoomViewController: UIViewController {
    
     func scrollToBottom(){
         DispatchQueue.main.async {
-           let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
-            self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
+                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
+             
         }
     }
     
@@ -127,7 +127,7 @@ extension ChatRoomViewController{
             Manager.shared.updateConversationLastMessage(messageData: lastMessage!, conversationId: self.roomId)
         }
         else{
-            Manager.shared.deleteConversation(converstaionId: self.roomId)
+            Manager.shared.deleteConversation(converstaionId: self.roomId){_ in }
         }
         self.selectedMsgId = []
         self.chatMsgList.reloadData()
@@ -194,11 +194,12 @@ extension ChatRoomViewController{
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
            return
         }
-        self.textfieldBottomConstraints.constant = -keyboardSize.height
+        let bottomSafeArea = self.view.safeAreaInsets.bottom
+        self.textfieldBottomConstraints.constant = keyboardSize.height - bottomSafeArea
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        self.textfieldBottomConstraints.constant = 0
+     self.textfieldBottomConstraints.constant = 0
     }
     
 }

@@ -581,7 +581,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="iuB-vT-I89"/>
                     <connections>
-                        <outlet property="bottomConstraints" destination="rCK-zw-Wpb" id="Vnq-NU-Ws1"/>
                         <outlet property="chatMsgList" destination="mFA-Cs-N0C" id="jPW-VU-zxY"/>
                         <outlet property="textField" destination="543-68-tAx" id="NbE-mx-EFp"/>
                         <outlet property="textfieldBottomConstraints" destination="XtP-XC-qJF" id="klg-fY-LOE"/>

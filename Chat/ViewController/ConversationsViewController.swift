@@ -36,10 +36,6 @@ class ConversationsViewController: UIViewController {
             }
             
         }
-//        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
-//        longPress.minimumPressDuration = 1.0
-//        userList.addGestureRecognizer(longPress)
-
     }
     
     
@@ -51,18 +47,6 @@ class ConversationsViewController: UIViewController {
     @IBAction func logoutButton(_ sender: Any) {
         showLogoutAlert()
           
-    }
-    
-    //MARK: long press gesture
-    @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
-        if sender.state == .began {
-            let touchPoint = sender.location(in: userList)
-            if let indexPath = userList.indexPathForRow(at: touchPoint) {
-                let conversation = conversations[indexPath.row].conversationId
-                showDeletAlert(conversationID: conversation , index: indexPath.item)
-                
-            }
-        }
     }
     
 }
@@ -83,16 +67,6 @@ extension ConversationsViewController{
         label.text = "Chat"
         return(label)
     }
-    
-    func showDeletAlert(conversationID: String, index: Int) {
-        let alert = UIAlertController(title: "", message: Keys.alertMessage,  preferredStyle: UIAlertController.Style.alert)
-
-        alert.addAction(UIAlertAction(title: Keys.cancel, style: UIAlertAction.Style.default, handler: { _ in }))
-        alert.addAction(UIAlertAction(title: Keys.delete,style: UIAlertAction.Style.default,  handler: {(_: UIAlertAction!) in
-                Manager.shared.deleteConversation(converstaionId: conversationID)
-            }))
-            self.present(alert, animated: true, completion: nil)
-        }
     
     func showLogoutAlert(){
         let alert = UIAlertController(title: "", message: "Do you want to logout", preferredStyle: .alert)
@@ -122,6 +96,7 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         guard let cell = userList.dequeueReusableCell(withIdentifier: "UserListCell") as? UserListCell else{
             return UITableViewCell()
         }
+        cell.selectionStyle = UITableViewCell.SelectionStyle.none
         let row = conversations[indexPath.row]
         cell.name.text = row.name
         cell.lastMessage.text = row.lastMessage
@@ -153,13 +128,17 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-                   completionHandler(true)
-               }
-        
-               deleteAction.image = UIImage(systemName: "trash")
-              // deleteAction.backgroundColor = .systemGreen
-               let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-               return configuration
+            Manager.shared.deleteConversation(converstaionId: self.conversations[indexPath.row].conversationId){ isDeleted in
+                if isDeleted{
+                    self.userList.reloadData()
+                }
+            }
+            
+            completionHandler(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
 }
 

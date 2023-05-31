@@ -26,6 +26,7 @@
 		E1D484B22A08B81600932F46 /* AllUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D484B12A08B81600932F46 /* AllUsersViewController.swift */; };
 		E1D96A452A172F8B000257B1 /* BubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D96A432A172F8B000257B1 /* BubbleView.swift */; };
 		E1D96A462A172F8B000257B1 /* BubbleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D96A442A172F8B000257B1 /* BubbleView.xib */; };
+		E1DB2EA12A2705AA003A4370 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */; };
 		E1E141542A123B66000415EF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = E1E141532A123B66000415EF /* FirebaseAnalytics */; };
 		E1E141562A123B66000415EF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E1E141552A123B66000415EF /* FirebaseAuth */; };
 		E1E141582A123B66000415EF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = E1E141572A123B66000415EF /* FirebaseDatabase */; };
@@ -536,6 +537,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1DB2EA12A2705AA003A4370 /* ConversationsViewController.swift in Sources */,
 				E1D2FE1529FA515A009E676E /* ChatUITestsLaunchTests.swift in Sources */,
 				E1D2FE1329FA515A009E676E /* ChatUITests.swift in Sources */,
 			);
@@ -698,6 +700,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TWML9NCY32;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Chat/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -710,7 +713,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = offsureit.Chat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.offsure.rnd;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -726,6 +729,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TWML9NCY32;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Chat/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -738,7 +742,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = offsureit.Chat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.offsure.rnd;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

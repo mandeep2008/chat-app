@@ -82,18 +82,27 @@ class Manager{
         
         self.ref.child(Keys.users).getData(completion:  {  error, result in
             guard let values = result?.value, let usersList = values as? [String: Any]  else { return }
+            print(values)
+            print(usersList.values)
+            let userListValues = usersList.values
+            
+//            var dict = [[String: Any]]()
+//            usersList.values.forEach({ i in
+//                dict.append(i as? [String : Any] ?? [:])
+//            })
+            
+            do{
+                let data = try JSONSerialization.data(withJSONObject: usersList)
+                let json = try JSONDecoder().decode([String:UserDetail].self, from: data)
+                print(json)
+            }
+            catch{
+                print(error.localizedDescription)
+            }
+            
+            
             
             var userData = [Users]()
-            
-//            do{
-//                let data = try JSONSerialization.data(withJSONObject: data)
-//                let json = try JSONDecoder().decode(AllUsers.self, from: data)
-//                print(json)
-//            }
-//            catch{
-//                print(error.localizedDescription)
-//            }
-            
             for data in usersList.values{
                 let modelData = Users(json: data as? [String: Any] ?? [:])
                 if modelData.uid != self.auth.currentUser?.uid{
@@ -233,14 +242,20 @@ class Manager{
     }
     
     //MARK: delete conversations
-    func deleteConversation(converstaionId : String){
+    func deleteConversation(converstaionId : String, completion: @escaping (_ isDeleted: Bool)-> Void){
         self.ref.child(Keys.chats).child(converstaionId).removeValue(completionBlock: { error , result in
             guard error == nil else{
                 print(error?.localizedDescription as Any)
                 return
             }
         })
-        self.ref.child(Keys.conversations).child(converstaionId).removeValue()
+        self.ref.child(Keys.conversations).child(converstaionId).removeValue(completionBlock: { error, databaseRef in
+            guard error == nil else{
+                return
+            }
+            completion(true)
+        })
+        
     }
     
     //MARK: delete message
