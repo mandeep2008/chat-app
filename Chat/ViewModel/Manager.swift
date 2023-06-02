@@ -15,7 +15,7 @@ class Manager{
     static let shared = Manager()
     var ref = Database.database().reference()
     let auth = Auth.auth()
-    
+    let dataParsing = DataParsing()
     
     //MARK: SignUp user
     func signup(email: String,
@@ -77,50 +77,39 @@ class Manager{
         }
     }
     
+   
     //MARK: get list of all users
-    func getUserList(completion:@escaping (_ data: [Users])-> Void ){
+    func getUserList(completion:@escaping (_ data: [UserDetail])-> Void ){
         
         self.ref.child(Keys.users).getData(completion:  {  error, result in
-            guard let values = result?.value, let usersList = values as? [String: Any]  else { return }
-            print(values)
-            print(usersList.values)
-            let userListValues = usersList.values
-            
-//            var dict = [[String: Any]]()
-//            usersList.values.forEach({ i in
-//                dict.append(i as? [String : Any] ?? [:])
-//            })
-            
-            do{
-                let data = try JSONSerialization.data(withJSONObject: usersList)
-                let json = try JSONDecoder().decode([String:UserDetail].self, from: data)
-                print(json)
+            guard let values = result?.value, let usersList = values as? [String: Any]  else {
+                print(error?.localizedDescription as Any)
+                return
             }
-            catch{
-                print(error.localizedDescription)
-            }
-            
-            
-            
-            var userData = [Users]()
-            for data in usersList.values{
-                let modelData = Users(json: data as? [String: Any] ?? [:])
-                if modelData.uid != self.auth.currentUser?.uid{
-                    userData.append(modelData)
+            var userListValues = [[String: Any]]()
+            usersList.values.forEach({ i in
+                let dict = i as? [String: Any]
+                if (dict?[Keys.userid] as? String ?? "") != (self.auth.currentUser?.uid as? String ?? ""){
+                    userListValues.append(dict ?? [:])
                 }
                 else
                 {
-                    // current loogged in user name using for message sendBy and sendTo
-                   UserDefaults.standard.set(modelData.name, forKey: Keys.name)
+                   //  current loogged in user name using for message sendBy and sendTo
+                    UserDefaults.standard.set(dict?[Keys.name], forKey: Keys.name)
                 }
+                
+            })
+            
+            self.dataParsing.decodeData(response: userListValues, model: [UserDetail].self){ result in
+                guard result as? [UserDetail] != nil else{return}
+                completion(result as! [UserDetail])
             }
-            completion(userData)
 
         })
     }
 
     //MARK: get conversations of current login user
-    func getConversations(userList: [Users],completion: @escaping (_ userData: [ConversationDetail])-> Void){
+    func getConversations(userList: [UserDetail],completion: @escaping (_ userData: [Conversations])-> Void){
         self.ref.child(Keys.conversations).observe(.value, with: {snapshot in
             if snapshot.exists(){
                 if let data = snapshot.value as? [String: Any]{
@@ -133,8 +122,8 @@ class Manager{
     }
     
 //MARK: save conversation details from conversations List and user detail from all user list
-    func saveConversationsDetails(userList: [Users],snapshotData: [String: Any], completion: @escaping(_ userData: [ConversationDetail])-> Void){
-        var userData = [ConversationDetail]()
+    func saveConversationsDetails(userList: [UserDetail],snapshotData: [String: Any], completion: @escaping(_ userData: [Conversations])-> Void){
+        var userData = [[String: Any]]()
 
         for (conversationId,value) in snapshotData{
             var dict = [String: Any]()
@@ -150,16 +139,16 @@ class Manager{
                             dict[Keys.name] = i.name
                             dict[Keys.userid] = i.uid
                             dict[Keys.profilePicUrl] = i.profilePicUrl
-                            let data = ConversationDetail(conversationData: dict)
-                            userData.append(data)
+                            userData.append(dict)
                         }
                     }
                 }
             }
         }
-        userData.sort(by: {$0.messageTime > $1.messageTime})
-        completion(userData)
-
+        self.dataParsing.decodeData(response: userData, model: [Conversations].self){ result in
+            guard result as? [Conversations] != nil else{return}
+            completion(result as! [Conversations])
+        }
     }
     //MARK: get userId by spliting conversation id
     func accessUserId(id: String, competion: (_ id: String)->Void){
@@ -178,15 +167,17 @@ class Manager{
     
     
     //MARK: get data from database
-    func readData(roomId: String, completion: @escaping (_ msgArray: [ChatModel])-> Void){
-        var msgArray = [ChatModel]()
+    func readData(roomId: String, completion: @escaping (_ msgArray: [MessageModel])-> Void){
+        var msgArray = [[String: Any]]()
         self.ref.child(Keys.chats).child(roomId).observe(.childAdded, with: {snapshot in
             if var snap = snapshot.value as? [String: Any]{
              snap[Keys.msgId] = snapshot.key
-                let messageData = ChatModel(chatData: snap)
-                msgArray.append(messageData)
+                msgArray.append(snap)
             }
-            completion(msgArray)
+            self.dataParsing.decodeData(response: msgArray, model: [MessageModel].self){ result in
+                guard result as? [MessageModel] != nil else{return}
+                completion(result as! [MessageModel])
+            }
         })
 
     }
@@ -259,11 +250,11 @@ class Manager{
     }
     
     //MARK: delete message
-    func deleteMessage(conversationId: String,selectedMsgArray: [ChatModel]){
+    func deleteMessage(conversationId: String,selectedMsgArray: [MessageModel]){
         let chatRef =  ref.child(Keys.chats).child(conversationId)
         for message in selectedMsgArray{
             if message.senderId == self.auth.currentUser?.uid {
-                chatRef.child(message.msgId).removeValue(completionBlock: {error, databaseRef in
+                chatRef.child(message.msgId ?? "").removeValue(completionBlock: {error, databaseRef in
                     guard error == nil else{
                         return
                     }
@@ -276,7 +267,7 @@ class Manager{
     
     //MARK: update last message in conversations
     
-    func updateConversationLastMessage(messageData: ChatModel, conversationId: String){
+    func updateConversationLastMessage(messageData: MessageModel, conversationId: String){
         let dict = [Keys.lastMessage: messageData.message, Keys.messageTime: messageData.messageTime] as [String : Any]
         self.ref.child(Keys.conversations).child(conversationId).updateChildValues(dict)
     }

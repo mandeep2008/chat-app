@@ -7,48 +7,37 @@
 
 import Foundation
 
-
-//struct AllUsersModel{
-//    let user: [UserId]?
-//}
-//struct UserId{
-//    let userId : UserDetail?
-//}
-//struct UserDetail{
-//    let email, name, profilePicUrl, uid : String?
-//}
-
-//struct User{
-//    var userList : UserDetail?
-//    init(users: [String: Any]){
-//        userList = UserDetail(json: users["userList"] as? [String: Any] ?? [:])
+//struct Users {
+//    var name: String = ""
+//    var email: String = ""
+//    var uid: String = ""
+//    var profilePicUrl: String = ""
+//
+//    init(json: [String: Any]) {
+//        name = json[Keys.name] as? String ?? ""
+//        email = json[Keys.email] as? String ?? ""
+//        uid = json[Keys.userid] as? String ?? ""
+//        profilePicUrl = json[Keys.profilePicUrl] as? String ?? ""
 //    }
 //}
 
-struct Users {
-    var name: String = ""
-    var email: String = ""
-    var uid: String = ""
-    var profilePicUrl: String = ""
-
-    init(json: [String: Any]) {
-        name = json[Keys.name] as? String ?? ""
-        email = json[Keys.email] as? String ?? ""
-        uid = json[Keys.userid] as? String ?? ""
-        profilePicUrl = json[Keys.profilePicUrl] as? String ?? ""
-    }
-}
 
 
-//struct AllUsers: Codable{
-//    var user: UserDetail?
-//}
 
 struct UserDetail: Codable{
     var name: String?
     var email: String?
     var uid: String?
     var profilePicUrl: String?
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.email = try container.decodeIfPresent(String.self, forKey: .email)
+        self.uid = try container.decodeIfPresent(String.self, forKey: .uid)
+        self.profilePicUrl = try container.decodeIfPresent(String.self, forKey: .profilePicUrl)
+    }
 }
+
 
 

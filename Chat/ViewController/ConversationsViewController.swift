@@ -17,7 +17,7 @@ class ConversationsViewController: UIViewController {
 
     @IBOutlet weak var allUser: UIButton!
     @IBOutlet weak var userList: UITableView!
-    var conversations = [ConversationDetail]()
+    var conversations = [Conversations]()
     
     let allUsersInstance = AllUsersViewController()
     override func viewDidLoad() {
@@ -100,14 +100,14 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         let row = conversations[indexPath.row]
         cell.name.text = row.name
         cell.lastMessage.text = row.lastMessage
-        if row.profilePicUrl != ""{
+        if row.profilePicUrl != nil{
             CommonViews.shared.profileImageStyle(profileImage: cell.profile)
-            cell.profile.kf.setImage(with: URL(string: row.profilePicUrl))
+            cell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
         }
         else{
             cell.profile.image = UIImage(systemName: "person.circle")
         }
-        let messageTime = Manager.shared.accessTime(time: Double(row.messageTime))
+        let messageTime = Manager.shared.accessTime(time: Double(row.messageTime ?? 0))
         cell.messageTime.text = messageTime
         return cell
     }
@@ -121,14 +121,14 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
         navigationController?.pushViewController(VC!, animated: true)
         let row = conversations[indexPath.row]
-            VC?.name = row.name
-            VC?.userId = row.uid
-            VC?.roomId = row.conversationId
+            VC?.name = row.name ?? ""
+            VC?.userId = row.uid ?? ""
+            VC?.roomId = row.conversationId ?? ""
         }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-            Manager.shared.deleteConversation(converstaionId: self.conversations[indexPath.row].conversationId){ isDeleted in
+            Manager.shared.deleteConversation(converstaionId: self.conversations[indexPath.row].conversationId ?? ""){ isDeleted in
                 if isDeleted{
                     self.userList.reloadData()
                 }

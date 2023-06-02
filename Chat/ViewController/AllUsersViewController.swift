@@ -21,7 +21,7 @@ class AllUsersViewController: UIViewController {
     @IBOutlet weak var contactList: UITableView!
     
     let nameList: [String] = []
-    var userDict = [Users] ()
+    var userDict = [UserDetail] ()
 
  
     override func viewDidLoad() {
@@ -53,8 +53,8 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         let row = userDict[indexPath.row]
         listCell.name.text = row.name
         CommonViews.shared.profileImageStyle(profileImage: listCell.profile)
-        if row.profilePicUrl != ""{
-            listCell.profile.kf.setImage(with: URL(string: row.profilePicUrl))
+        if row.profilePicUrl != nil{
+            listCell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
         }
         else
         {
@@ -73,9 +73,9 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
 
         contactList.deselectRow(at: indexPath, animated: true)
         let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
-        VC?.name = row.name
-        VC?.userId = row.uid
-        Manager.shared.checkconversation(selectedUserId: row.uid){ roomId in
+        VC?.name = row.name ?? ""
+        VC?.userId = row.uid ?? ""
+        Manager.shared.checkconversation(selectedUserId: row.uid ?? ""){ roomId in
                         VC?.roomId = roomId
                         self.navigationController?.pushViewController(VC!, animated: true)
             }

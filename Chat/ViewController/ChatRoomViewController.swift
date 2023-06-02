@@ -15,13 +15,13 @@ class ChatRoomViewController: UIViewController {
     
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var chatMsgList: UITableView!
-    var msgArray = [ChatModel]()
+    var msgArray = [MessageModel]()
     
     var name = ""
     var userId = ""
     var roomId = ""
     var sendMessageTime  = Int64()
-    var selectedMsgId = [ChatModel]()
+    var selectedMsgId = [MessageModel]()
     var selectionEnable = false
     
     
@@ -147,7 +147,7 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
             return UITableViewCell()
         }
         let row = msgArray[indexPath.row]
-        let messageTime = Manager.shared.accessTime(time: Double(row.messageTime))
+        let messageTime = Manager.shared.accessTime(time: Double(row.messageTime ?? 0))
         cell.messageTime.text = messageTime
         cell.message.text = row.message
         
@@ -158,7 +158,7 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         let msgId = msgArray[indexPath.row].msgId
         cell.checkBox.image = selectedMsgId.contains(where: {$0.msgId == msgId} ) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
 
-        cell.updateBubblePosition(senderId: row.senderId, selectionEnable: selectionEnable)
+        cell.updateBubblePosition(senderId: row.senderId ?? "", selectionEnable: selectionEnable)
 
         return cell
     }
