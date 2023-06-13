@@ -6,7 +6,7 @@ target 'Chat' do
   use_frameworks!
 
   # Pods for Chat
-  pod 'Kingfisher', '~> 4.0'
+  pod 'Kingfisher', '~> 7.0'
   target 'ChatTests' do
     inherit! :search_paths
     # Pods for testing

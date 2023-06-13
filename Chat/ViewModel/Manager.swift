@@ -8,7 +8,6 @@
 import Foundation
 import FirebaseAuth
 import FirebaseDatabase
-import CodableFirebase
 
 
 class Manager{
@@ -181,6 +180,7 @@ class Manager{
         })
 
     }
+    
     
     //MARK: save message to database
     func saveMsg(roomId: String, msgDict: inout [String: Any]){

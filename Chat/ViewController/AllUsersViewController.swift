@@ -10,42 +10,48 @@ import Kingfisher
 
 
 
-class ContactListCell: UITableViewCell{
-    
-    @IBOutlet weak var profile: UIImageView!
-    @IBOutlet weak var name: UILabel!
-    
-}
-
 class AllUsersViewController: UIViewController {
     @IBOutlet weak var contactList: UITableView!
-    
+
+    @IBOutlet weak var createGroupView: UIView!
     let nameList: [String] = []
     var userDict = [UserDetail] ()
+    var selectionEnable = false
 
- 
+
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+
 
         contactList.delegate = self
         contactList.dataSource = self
-        
+        let tapGesture = UITapGestureRecognizer(target:self,action:#selector(self.createGroupTap))
+        createGroupView.addGestureRecognizer(tapGesture)
         Manager.shared.getUserList(){ data in
           self.userDict = data
             self.contactList.reloadData()
-            
+
         }
+    }
+
+    @objc func createGroupTap() {
+//        let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
+//        self.navigationController?.pushViewController(vc!, animated: true)
+//        vc?.userList = self.userDict
+        self.selectionEnable.toggle()
     }
 
 }
 
 
 extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userDict.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let listCell = contactList.dequeueReusableCell(withIdentifier: "ContactListCell", for: indexPath) as? ContactListCell else{
             return UITableViewCell()
@@ -60,14 +66,17 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         {
             listCell.profile.image = UIImage(systemName: "person.circle")
         }
-
+        listCell.showRadioButton(selectionEnable: self.selectionEnable)
         return listCell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
-    
-    //MARK: select user 
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "All Users"
+    }
+    //MARK: select user
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = userDict[indexPath.row]
 
@@ -79,10 +88,10 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
                         VC?.roomId = roomId
                         self.navigationController?.pushViewController(VC!, animated: true)
             }
-       
+
     }
-    
-   
-    
+
+
+
 }
 
