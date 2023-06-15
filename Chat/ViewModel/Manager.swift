@@ -35,6 +35,8 @@ class Manager{
                         Keys.profilePicUrl: profileUrl]
             self.saveUser(userId: id, userDict: dict){userSaved in
                 if userSaved{
+                    print("saved 2")
+
                     completion(true)
                     
                 }
@@ -49,6 +51,8 @@ class Manager{
                   userDict: [String: Any],
                   completion: @escaping (_ userSaved : Bool)-> Void){
         self.ref.child(Keys.users).child(userId).setValue(userDict)
+        print("saved")
+        completion(true)
     }
     
     //MARK: Login
@@ -95,6 +99,7 @@ class Manager{
                 {
                    //  current loogged in user name using for message sendBy and sendTo
                     UserDefaults.standard.set(dict?[Keys.name], forKey: Keys.name)
+                    UserDefaults.standard.set(dict?[Keys.profilePicUrl], forKey: Keys.profilePicUrl)
                 }
                 
             })

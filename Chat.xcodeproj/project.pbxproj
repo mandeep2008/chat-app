@@ -10,6 +10,7 @@
 		000C8DA40702981A778A06FD /* Pods_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1265380F84EC17B8FB6AAA17 /* Pods_ChatTests.framework */; };
 		103046F1D747C574F196C4EA /* Pods_Chat_ChatUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 802350C04BD282BA6164B984 /* Pods_Chat_ChatUITests.framework */; };
 		4EC5B70DB2528E81498E29B7 /* Pods_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B3052430B9D98818B3EFC6D /* Pods_Chat.framework */; };
+		E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */; };
 		E16998B02A0A0D070057F9C2 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */; };
 		E16998B22A0A11320057F9C2 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998B12A0A11320057F9C2 /* Manager.swift */; };
 		E1C4EB272A00D55E008745D3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1C4EB262A00D55E008745D3 /* GoogleService-Info.plist */; };
@@ -19,10 +20,11 @@
 		E1C61CFD2A384F18002D34FB /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CFC2A384F18002D34FB /* FirebaseFirestore */; };
 		E1C61CFF2A384F18002D34FB /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CFE2A384F18002D34FB /* FirebaseStorage */; };
 		E1C61D012A386E53002D34FB /* CreateGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */; };
-		E1C61D032A387B59002D34FB /* ContactListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C61D022A387B59002D34FB /* ContactListCell.swift */; };
 		E1C61D052A389BE6002D34FB /* AddGroupDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */; };
 		E1CFFAED2A28C0DB0001527D /* DataParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CFFAEC2A28C0DB0001527D /* DataParsing.swift */; };
 		E1D134E62A1B87D900446B4D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D134E52A1B87D900446B4D /* Constants.swift */; };
+		E1D1F3112A39B62A00835F91 /* UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D1F30F2A39B62A00835F91 /* UserList.swift */; };
+		E1D1F3122A39B62A00835F91 /* UserList.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D1F3102A39B62A00835F91 /* UserList.xib */; };
 		E1D2FDF229FA5157009E676E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D2FDF129FA5157009E676E /* AppDelegate.swift */; };
 		E1D2FDF429FA5157009E676E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D2FDF329FA5157009E676E /* SceneDelegate.swift */; };
 		E1D2FDF929FA5157009E676E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E1D2FDF729FA5157009E676E /* Main.storyboard */; };
@@ -72,14 +74,16 @@
 		802350C04BD282BA6164B984 /* Pods_Chat_ChatUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chat_ChatUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B23275A051F33A964969E2B7 /* Pods-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.release.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		C8F0630D864269101EB3E6DF /* Pods-ChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.debug.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatManager.swift; sourceTree = "<group>"; };
 		E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsViewController.swift; sourceTree = "<group>"; };
 		E16998B12A0A11320057F9C2 /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
 		E1C4EB262A00D55E008745D3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewController.swift; sourceTree = "<group>"; };
-		E1C61D022A387B59002D34FB /* ContactListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListCell.swift; sourceTree = "<group>"; };
 		E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupDetailsViewController.swift; sourceTree = "<group>"; };
 		E1CFFAEC2A28C0DB0001527D /* DataParsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataParsing.swift; sourceTree = "<group>"; };
 		E1D134E52A1B87D900446B4D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E1D1F30F2A39B62A00835F91 /* UserList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserList.swift; sourceTree = "<group>"; };
+		E1D1F3102A39B62A00835F91 /* UserList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserList.xib; sourceTree = "<group>"; };
 		E1D2FDEE29FA5157009E676E /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D2FDF129FA5157009E676E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1D2FDF329FA5157009E676E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -171,7 +175,6 @@
 				E1D2FE2129FA96AE009E676E /* ChatRoomViewController.swift */,
 				E1F3F8502A149B5B00926396 /* CommonViews.swift */,
 				E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */,
-				E1C61D022A387B59002D34FB /* ContactListCell.swift */,
 				E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */,
 			);
 			path = ViewController;
@@ -240,6 +243,7 @@
 				E16998B12A0A11320057F9C2 /* Manager.swift */,
 				E1E1415D2A123BE5000415EF /* StorageManager.swift */,
 				E1CFFAEC2A28C0DB0001527D /* DataParsing.swift */,
+				E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -250,6 +254,8 @@
 				E1D2FDF729FA5157009E676E /* Main.storyboard */,
 				E1D96A432A172F8B000257B1 /* BubbleView.swift */,
 				E1D96A442A172F8B000257B1 /* BubbleView.xib */,
+				E1D1F30F2A39B62A00835F91 /* UserList.swift */,
+				E1D1F3102A39B62A00835F91 /* UserList.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -383,6 +389,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D1F3122A39B62A00835F91 /* UserList.xib in Resources */,
 				E1D2FDFE29FA515A009E676E /* LaunchScreen.storyboard in Resources */,
 				E1D2FDFB29FA515A009E676E /* Assets.xcassets in Resources */,
 				E1C4EB272A00D55E008745D3 /* GoogleService-Info.plist in Resources */,
@@ -515,11 +522,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D1F3112A39B62A00835F91 /* UserList.swift in Sources */,
 				E16998B02A0A0D070057F9C2 /* ConversationsViewController.swift in Sources */,
 				E1D96A452A172F8B000257B1 /* BubbleView.swift in Sources */,
 				E1E456E32A03B67500E8B10D /* LoginViewController.swift in Sources */,
 				E1D134E62A1B87D900446B4D /* Constants.swift in Sources */,
-				E1C61D032A387B59002D34FB /* ContactListCell.swift in Sources */,
+				E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */,
 				E1D484B22A08B81600932F46 /* AllUsersViewController.swift in Sources */,
 				E1F922262A20D1E70072C240 /* ChatModel.swift in Sources */,
 				E1C61D012A386E53002D34FB /* CreateGroupViewController.swift in Sources */,

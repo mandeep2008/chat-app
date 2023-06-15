@@ -34,6 +34,7 @@ class SignupViewController: UIViewController {
         if email.text != nil && password.text != nil{
             StorageManager.shared.UploadImage(image: profile.image!){ url in
                 Manager.shared.signup(email: self.email.text!, password: self.password.text!, name: self.name.text ?? "", profileUrl: url){ success in
+                    print("success")
                     let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
                     self.navigationController?.pushViewController(vc!, animated: true)
                 }

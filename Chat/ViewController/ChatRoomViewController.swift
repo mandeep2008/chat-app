@@ -140,7 +140,8 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         return msgArray.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
                 longPress.minimumPressDuration = 0.5
         guard let cell = chatMsgList.dequeueReusableCell(withIdentifier: BubbleView.identifier, for: indexPath) as? BubbleView else{
@@ -150,16 +151,13 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         let messageTime = Manager.shared.accessTime(time: Double(row.messageTime ?? 0))
         cell.messageTime.text = messageTime
         cell.message.text = row.message
-        
         cell.contentView.tag = indexPath.row
         cell.checkBox.isHidden = selectionEnable ? false : true
        
         cell.contentView.addGestureRecognizer(longPress)
         let msgId = msgArray[indexPath.row].msgId
         cell.checkBox.image = selectedMsgId.contains(where: {$0.msgId == msgId} ) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
-
         cell.updateBubblePosition(senderId: row.senderId ?? "", selectionEnable: selectionEnable)
-
         return cell
     }
     

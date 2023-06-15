@@ -25,6 +25,8 @@ class AllUsersViewController: UIViewController {
 
         contactList.delegate = self
         contactList.dataSource = self
+        contactList.register(UserList.nib, forCellReuseIdentifier: UserList.identifier)
+        
         let tapGesture = UITapGestureRecognizer(target:self,action:#selector(self.createGroupTap))
         createGroupView.addGestureRecognizer(tapGesture)
         Manager.shared.getUserList(){ data in
@@ -35,10 +37,9 @@ class AllUsersViewController: UIViewController {
     }
 
     @objc func createGroupTap() {
-//        let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
-//        self.navigationController?.pushViewController(vc!, animated: true)
-//        vc?.userList = self.userDict
-        self.selectionEnable.toggle()
+        let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
+        self.navigationController?.pushViewController(vc!, animated: true)
+        vc?.userList = self.userDict
     }
 
 }
@@ -53,7 +54,7 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let listCell = contactList.dequeueReusableCell(withIdentifier: "ContactListCell", for: indexPath) as? ContactListCell else{
+        guard let listCell = contactList.dequeueReusableCell(withIdentifier: UserList.identifier, for: indexPath) as? UserList else{
             return UITableViewCell()
         }
         let row = userDict[indexPath.row]
@@ -66,7 +67,7 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         {
             listCell.profile.image = UIImage(systemName: "person.circle")
         }
-        listCell.showRadioButton(selectionEnable: self.selectionEnable)
+        listCell.radioButton.isHidden = true
         return listCell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
