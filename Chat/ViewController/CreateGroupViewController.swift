@@ -40,9 +40,9 @@ extension CreateGroupViewController: UITableViewDataSource{
         }
         else
         {
-            cell.profile.image = UIImage(systemName: "person.circle")
+            cell.profile.image = UIImage(systemName: Keys.personWithCircle)
         }
-        cell.radioButton.image = selectedUsers.contains(where: {$0.uid == userList[indexPath.row].uid}) ? UIImage(systemName: "circle.inset.filled") : UIImage(systemName:"circle" )
+        cell.radioButton.image = selectedUsers.contains(where: {$0.uid == userList[indexPath.row].uid}) ? UIImage(systemName: Keys.circleInsetFilled) : UIImage(systemName: Keys.circle )
         return cell
     }
    
@@ -83,6 +83,7 @@ extension CreateGroupViewController{
     @objc func nextButton(){
         let vc = self.storyboard?.instantiateViewController(identifier: "AddGroupDetailsViewController") as? AddGroupDetailsViewController
         self.navigationController?.pushViewController(vc!, animated: true)
+       
         vc?.selectedUserList = selectedUsers
     }
 }

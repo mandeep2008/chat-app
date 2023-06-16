@@ -65,7 +65,7 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         }
         else
         {
-            listCell.profile.image = UIImage(systemName: "person.circle")
+            listCell.profile.image = UIImage(systemName: Keys.personWithCircle)
         }
         listCell.radioButton.isHidden = true
         return listCell

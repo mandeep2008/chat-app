@@ -131,11 +131,21 @@ class Manager{
 
         for (conversationId,value) in snapshotData{
             var dict = [String: Any]()
-            if let values = value as? [String: Any]{
-                dict = values
+            guard let values = value as? [String: Any] else{
+              return
             }
+            dict = values
             dict[Keys.conversationId] = conversationId
-            if conversationId.contains(self.auth.currentUser?.uid ?? ""){
+            
+            print(dict)
+            if dict[Keys.chatType] != nil && dict[Keys.chatType] as! String == Keys.group{
+                print("group")
+                GroupChatManager.shared.readGroups(){ data in
+                    print(data)
+                }
+            }
+            
+           else if conversationId.contains(self.auth.currentUser?.uid ?? "") {
                 
                 self.accessUserId(id: conversationId){userId in
                     for i in userList{

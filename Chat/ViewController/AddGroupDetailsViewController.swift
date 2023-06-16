@@ -8,7 +8,7 @@
 import UIKit
 import Kingfisher
 
-class Participants: UICollectionViewCell{
+class ParticipantsCell: UICollectionViewCell{
     
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var profile: UIImageView!
@@ -40,16 +40,19 @@ class AddGroupDetailsViewController: UIViewController {
     
     @IBAction func createGroupButton(_ sender: Any) {
         var participants = convertSelectUserObjectToDictionary()
+        let conversationDict = [Keys.lastMessage: "" , Keys.messageTime:0, Keys.chatType: Keys.group] as [String: Any]
+
         StorageManager.shared.UploadImage(image: groupProflle.image!){ url in
-            var groupDetail = [String: Any]()
-            groupDetail["groupIcon"] = url
-            groupDetail["groupName"] = self.groupTitleTextfield.text
-            groupDetail["adminName"] = UserDefaults.standard.string(forKey: Keys.name)
             
-            GroupChatManager.shared.createGroup(groupDetail: &groupDetail, participants: &participants){ data in
-                
+            var groupDetail = [String: Any]()
+            groupDetail[Keys.groupIcon] = url
+            groupDetail[Keys.groupName] = self.groupTitleTextfield.text
+            groupDetail[Keys.adminName] = UserDefaults.standard.string(forKey: Keys.name)
+            
+            GroupChatManager.shared.createGroup(groupDetail: &groupDetail, participants: &participants){ groupId in
                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
-                self.navigationController?.pushViewController(vc!, animated: true)
+                self.navigationController?.pushViewController(vc!, animated: false)
+                Manager.shared.createConversation(roomId: groupId, conversationDict: conversationDict)
             }
         }
     }
@@ -57,11 +60,12 @@ class AddGroupDetailsViewController: UIViewController {
     func convertSelectUserObjectToDictionary() -> [[String: Any]]{
         var participants = [[String: Any]]()
         var dict = [String: Any]()
+        
         for i in selectedUserList{
-            dict["name"] = i.name
-            dict["email"] = i.email
-            dict["uid"] = i.uid
-            dict["profilePicUrl"] = i.profilePicUrl
+            dict[Keys.name] = i.name
+            dict[Keys.email] = i.email
+            dict[Keys.userid] = i.uid
+            dict[Keys.profilePicUrl] = i.profilePicUrl
             participants.append(dict)
             
         }
@@ -96,7 +100,7 @@ extension AddGroupDetailsViewController: UICollectionViewDataSource, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = participantsCollection.dequeueReusableCell(withReuseIdentifier: "Participants", for: indexPath) as? Participants else {
+        guard let cell = participantsCollection.dequeueReusableCell(withReuseIdentifier: "ParticipantsCell", for: indexPath) as? ParticipantsCell else {
             return UICollectionViewCell()
         }
         let item = selectedUserList[indexPath.row]
@@ -107,7 +111,7 @@ extension AddGroupDetailsViewController: UICollectionViewDataSource, UICollectio
         }
         else
         {
-            cell.profile.image = UIImage(systemName: "person.circle")
+            cell.profile.image = UIImage(systemName: Keys.personWithCircle)
         }
         return cell
     }

@@ -105,7 +105,7 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
             cell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
         }
         else{
-            cell.profile.image = UIImage(systemName: "person.circle")
+            cell.profile.image = UIImage(systemName: Keys.personWithCircle)
         }
         let messageTime = Manager.shared.accessTime(time: Double(row.messageTime ?? 0))
         cell.messageTime.text = messageTime

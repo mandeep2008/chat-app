@@ -14,39 +14,55 @@ class GroupChatManager{
     
     var ref = Database.database().reference()
     let auth = Auth.auth()
+    let dataParsing = DataParsing()
     
     //MARK: create group
     func createGroup(groupDetail: inout [String:Any],
                     participants: inout [[String: Any]],
-                     completion: @escaping (_ groupCreated : Bool)-> Void)
+                     completion: @escaping (_ groupId : String)-> Void)
     {
-        let currentLoginUserDict = ["name": UserDefaults.standard.string(forKey: Keys.name),
-                                    "email": auth.currentUser?.email,
-                                    "uid": auth.currentUser?.uid,
-                                    "profilePicUrl": UserDefaults.standard.string(forKey: Keys.profilePicUrl)]
-        participants.append(currentLoginUserDict)
-        let groupRef = self.ref.child("GroupChat").childByAutoId()
+        let currentLoginUserDict = [Keys.name: UserDefaults.standard.string(forKey: Keys.name),
+                                    Keys.email: auth.currentUser?.email,
+                                    Keys.userid: auth.currentUser?.uid,
+                                    Keys.profilePicUrl: UserDefaults.standard.string(forKey: Keys.profilePicUrl)]
+        participants.append(currentLoginUserDict as [String: Any])
+    
+        let key = self.ref.child(Keys.groupChat).childByAutoId().key // access auto id 
         
-        groupDetail["adminUid"] = self.auth.currentUser?.uid
-        groupRef.child("GroupDetails").setValue(groupDetail)
+        groupDetail[Keys.adminUid] = self.auth.currentUser?.uid
+        self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.groupDetail).setValue(groupDetail)
         
         for i in participants{
-            groupRef.child("Participants").child(i["uid"] as! String).setValue(i)
+            self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.participants).child(i[Keys.userid] as! String).setValue(i)
         }
-        readGroups()
+        completion(key ?? "")
         print("saved")
-        completion(true)
     }
     
     //MARK: read groups list
-    func readGroups(){
-        self.ref.child("GroupChat").observeSingleEvent(of: .value, with: {snapshot in
-            print(snapshot)
+    func readGroups(completion: @escaping(_ groupsData: [String: Any])-> Void){
+        self.ref.child(Keys.groupChat).observeSingleEvent(of: .value, with: {snapshot in
+            guard let data = snapshot.value as? [String: Any] else {
+                return
+            }
+            print(data)
+            let groupsData = data
+            var participantsData = [[String: Any]]()
+            for i in snapshot.children{
+                let childSnap = i as! DataSnapshot
+            
+                let participantsSnap = childSnap.childSnapshot(forPath: "Participants")
+                
+                let groupDetailsnap = childSnap.childSnapshot(forPath: "GroupDetails")
+                        for groupChild in participantsSnap.children {
+                            let snap = groupChild as! DataSnapshot
+                            let dict = snap.value as! [String: Any]
+                            participantsData.append(dict)
+                        }
+            }
+            completion(groupsData)
         })
     }
     
-    
-    func addGroupInConverstaions(){
-        
-    }
 }
+
