@@ -14,6 +14,7 @@ class BubbleView: UITableViewCell {
     @IBOutlet weak var checkBox: UIImageView!
     @IBOutlet weak var message: UILabel!
 
+    @IBOutlet weak var senderName: UILabel!
     @IBOutlet weak var messageView: UIView!
     var bubbleTrailingConstraints : NSLayoutConstraint?
     var bubbleLeadingConstraints : NSLayoutConstraint?
@@ -53,7 +54,7 @@ class BubbleView: UITableViewCell {
     }
     
     
-    func updateBubblePosition(senderId: String, selectionEnable: Bool){
+    func updateBubblePosition(senderId: String, selectionEnable: Bool, chatType: String){
         if senderId == Auth.auth().currentUser?.uid{
             messageView.layer.cornerRadius = messageView.frame.height/3
             messageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -74,6 +75,9 @@ class BubbleView: UITableViewCell {
             checkBoxLeadingConstraints?.isActive = true
 
             leftBubbleConstraints(value: selectionEnable ? 30 : 14)
+            if chatType == "group"{
+                senderName.isHidden = false
+            }
             
         }
         

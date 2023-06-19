@@ -157,7 +157,8 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         cell.contentView.addGestureRecognizer(longPress)
         let msgId = msgArray[indexPath.row].msgId
         cell.checkBox.image = selectedMsgId.contains(where: {$0.msgId == msgId} ) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
-        cell.updateBubblePosition(senderId: row.senderId ?? "", selectionEnable: selectionEnable)
+       // cell.senderName.text = row.sendBy ?? ""
+        cell.updateBubblePosition(senderId: row.senderId ?? "", selectionEnable: selectionEnable, chatType: row.chatType ?? "")
         return cell
     }
     

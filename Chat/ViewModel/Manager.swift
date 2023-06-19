@@ -117,6 +117,7 @@ class Manager{
         self.ref.child(Keys.conversations).observe(.value, with: {snapshot in
             if snapshot.exists(){
                 if let data = snapshot.value as? [String: Any]{
+                    print(data)
                     self.saveConversationsDetails(userList: userList, snapshotData: data){ userData in
                         completion(userData)
                     }
@@ -129,6 +130,7 @@ class Manager{
     func saveConversationsDetails(userList: [UserDetail],snapshotData: [String: Any], completion: @escaping(_ userData: [Conversations])-> Void){
         var userData = [[String: Any]]()
 
+        print(snapshotData.values)
         for (conversationId,value) in snapshotData{
             var dict = [String: Any]()
             guard let values = value as? [String: Any] else{
@@ -136,15 +138,37 @@ class Manager{
             }
             dict = values
             dict[Keys.conversationId] = conversationId
-            
-            print(dict)
+ // check if group chat or single chat
             if dict[Keys.chatType] != nil && dict[Keys.chatType] as! String == Keys.group{
                 print("group")
                 GroupChatManager.shared.readGroups(){ data in
                     print(data)
+                    let detail = data.values
+// access group details and participants list
+                    for i in detail{
+                        let values = i as? [String: Any]
+                        print(values?[Keys.participants])
+                        let groupDetails = values?[Keys.groupDetail] as? [String: Any]
+                        let participantsList = values?[Keys.participants] as? [String: Any]
+                        
+                        // check whether group contains loggedin user or not
+                      let map =  participantsList.map({
+                          $0.contains(where: {$0.key == self.auth.currentUser?.uid
+                          })
+                        })
+                        if map == true{
+                            print(groupDetails)
+                            
+                            dict[Keys.name] = groupDetails?["groupName"]
+                            dict[Keys.conversationId] = groupDetails?["groupId"]
+                            dict[Keys.profilePicUrl] = groupDetails?["groupIcon"]
+                            userData.append(dict)
+                        }
+                    }
+                    
                 }
             }
-            
+            // for single chat
            else if conversationId.contains(self.auth.currentUser?.uid ?? "") {
                 
                 self.accessUserId(id: conversationId){userId in
@@ -159,8 +183,10 @@ class Manager{
                 }
             }
         }
+        print(userData)
         self.dataParsing.decodeData(response: userData, model: [Conversations].self){ result in
             guard result as? [Conversations] != nil else{return}
+            print(result)
             completion(result as! [Conversations])
         }
     }

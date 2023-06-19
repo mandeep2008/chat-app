@@ -30,6 +30,7 @@ class GroupChatManager{
         let key = self.ref.child(Keys.groupChat).childByAutoId().key // access auto id 
         
         groupDetail[Keys.adminUid] = self.auth.currentUser?.uid
+        groupDetail["groupId"] = key
         self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.groupDetail).setValue(groupDetail)
         
         for i in participants{
@@ -45,22 +46,8 @@ class GroupChatManager{
             guard let data = snapshot.value as? [String: Any] else {
                 return
             }
-            print(data)
-            let groupsData = data
-            var participantsData = [[String: Any]]()
-            for i in snapshot.children{
-                let childSnap = i as! DataSnapshot
-            
-                let participantsSnap = childSnap.childSnapshot(forPath: "Participants")
-                
-                let groupDetailsnap = childSnap.childSnapshot(forPath: "GroupDetails")
-                        for groupChild in participantsSnap.children {
-                            let snap = groupChild as! DataSnapshot
-                            let dict = snap.value as! [String: Any]
-                            participantsData.append(dict)
-                        }
-            }
-            completion(groupsData)
+            print(data.values)
+            completion(data)
         })
     }
     

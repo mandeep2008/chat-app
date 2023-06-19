@@ -31,8 +31,11 @@ class ConversationsViewController: UIViewController {
         
         Manager.shared.getUserList(){ data in
             Manager.shared.getConversations(userList: data){ conversationsList in
-               self.conversations = conversationsList
-                self.userList.reloadData()
+                DispatchQueue.main.async {
+                     self.conversations = conversationsList
+                    self.userList.reloadData()
+                }
+              
             }
             
         }
