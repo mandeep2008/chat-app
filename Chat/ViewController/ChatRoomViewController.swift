@@ -20,6 +20,7 @@ class ChatRoomViewController: UIViewController {
     var name = ""
     var userId = ""
     var roomId = ""
+    var chatType = ""
     var sendMessageTime  = Int64()
     var selectedMsgId = [MessageModel]()
     var selectionEnable = false
@@ -59,9 +60,11 @@ class ChatRoomViewController: UIViewController {
                            Keys.sendTo: self.name,
                            Keys.messageTime: sendMessageTime] as [String : Any]
             Manager.shared.saveMsg(roomId: roomId, msgDict: &msgDict)
+     
+            let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime, "chatType": chatType == "group" ? "group" : "single"] as [String : Any]
             
-            let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime] as [String : Any]
-            Manager.shared.createConversation(roomId: roomId, conversationDict: conversationDict)
+                Manager.shared.createConversation(roomId: roomId, conversationDict: conversationDict)
+            
             textField.text = nil
             chatMsgList.reloadData()
             bottomScroll()
@@ -157,8 +160,8 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         cell.contentView.addGestureRecognizer(longPress)
         let msgId = msgArray[indexPath.row].msgId
         cell.checkBox.image = selectedMsgId.contains(where: {$0.msgId == msgId} ) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
-       // cell.senderName.text = row.sendBy ?? ""
-        cell.updateBubblePosition(senderId: row.senderId ?? "", selectionEnable: selectionEnable, chatType: row.chatType ?? "")
+        cell.senderName.text = row.sendBy ?? ""
+        cell.updateBubblePosition(senderId: row.senderId ?? "", selectionEnable: selectionEnable, chatType: chatType)
         return cell
     }
     

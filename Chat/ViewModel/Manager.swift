@@ -113,13 +113,21 @@ class Manager{
     }
 
     //MARK: get conversations of current login user
-    func getConversations(userList: [UserDetail],completion: @escaping (_ userData: [Conversations])-> Void){
+    func getConversations(userList: [UserDetail],groupData: [String: Any], completion: @escaping (_ userData: [Conversations])-> Void){
         self.ref.child(Keys.conversations).observe(.value, with: {snapshot in
             if snapshot.exists(){
                 if let data = snapshot.value as? [String: Any]{
                     print(data)
-                    self.saveConversationsDetails(userList: userList, snapshotData: data){ userData in
-                        completion(userData)
+                    self.saveConversationsDetails(userList: userList, groupData: groupData, snapshotData: data){ userData in
+                        
+                        // data parsing
+                        self.dataParsing.decodeData(response: userData, model: [Conversations].self){ result in
+                            guard result as? [Conversations] != nil else{return}
+                            print(result)
+                        
+                            completion(result as! [Conversations])
+                        }
+                        
                     }
                 }
             }
@@ -127,47 +135,40 @@ class Manager{
     }
     
 //MARK: save conversation details from conversations List and user detail from all user list
-    func saveConversationsDetails(userList: [UserDetail],snapshotData: [String: Any], completion: @escaping(_ userData: [Conversations])-> Void){
+    func saveConversationsDetails(userList: [UserDetail],groupData: [String: Any],snapshotData: [String: Any], completion: @escaping(_ userData: [[String: Any]])-> Void){
         var userData = [[String: Any]]()
 
-        print(snapshotData.values)
         for (conversationId,value) in snapshotData{
-            var dict = [String: Any]()
+            
             guard let values = value as? [String: Any] else{
               return
             }
-            dict = values
+           var dict = values
             dict[Keys.conversationId] = conversationId
- // check if group chat or single chat
+            print(values)
             if dict[Keys.chatType] != nil && dict[Keys.chatType] as! String == Keys.group{
-                print("group")
-                GroupChatManager.shared.readGroups(){ data in
-                    print(data)
-                    let detail = data.values
-// access group details and participants list
-                    for i in detail{
-                        let values = i as? [String: Any]
-                        print(values?[Keys.participants])
-                        let groupDetails = values?[Keys.groupDetail] as? [String: Any]
-                        let participantsList = values?[Keys.participants] as? [String: Any]
-                        
-                        // check whether group contains loggedin user or not
-                      let map =  participantsList.map({
-                          $0.contains(where: {$0.key == self.auth.currentUser?.uid
-                          })
+                for i in groupData.values{
+                    let valueDict = i as? [String: Any]
+                    let groupDetails = valueDict?[Keys.groupDetail] as? [String: Any]
+                    let participantsList = valueDict?[Keys.participants] as? [String: Any]
+                    
+                    if groupDetails?["groupId"] as! String == conversationId{
+                        // check whether group contains loggedin user uid or not
+                        let map =  participantsList.map({
+                            $0.contains(where: {$0.key == self.auth.currentUser?.uid
+                            })
                         })
+                        
                         if map == true{
-                            print(groupDetails)
-                            
                             dict[Keys.name] = groupDetails?["groupName"]
                             dict[Keys.conversationId] = groupDetails?["groupId"]
                             dict[Keys.profilePicUrl] = groupDetails?["groupIcon"]
                             userData.append(dict)
                         }
                     }
-                    
                 }
             }
+            
             // for single chat
            else if conversationId.contains(self.auth.currentUser?.uid ?? "") {
                 
@@ -183,12 +184,8 @@ class Manager{
                 }
             }
         }
-        print(userData)
-        self.dataParsing.decodeData(response: userData, model: [Conversations].self){ result in
-            guard result as? [Conversations] != nil else{return}
-            print(result)
-            completion(result as! [Conversations])
-        }
+    
+        completion(userData)
     }
     //MARK: get userId by spliting conversation id
     func accessUserId(id: String, competion: (_ id: String)->Void){
@@ -315,3 +312,48 @@ class Manager{
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//             GroupChatManager.shared.readGroups(){ data in
+//                // access group details and participants list
+//                    for i in data.values{
+//                        let valueDict = i as? [String: Any]
+//
+//                        let groupDetails = valueDict?[Keys.groupDetail] as? [String: Any]
+//                        let participantsList = valueDict?[Keys.participants] as? [String: Any]
+//
+//                        // check whether group contains loggedin user uid or not
+//                      let map =  participantsList.map({
+//                            $0.contains(where: {$0.key == self.auth.currentUser?.uid
+//                          })
+//                        })
+//
+//                        if map == true{
+//                            dict[Keys.name] = groupDetails?["groupName"]
+//                            dict[Keys.conversationId] = groupDetails?["groupId"]
+//                            dict[Keys.profilePicUrl] = groupDetails?["groupIcon"]
+//                            userData.append(dict)
+//                        }
+//                    }
+//
+//                }

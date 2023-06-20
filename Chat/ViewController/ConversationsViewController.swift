@@ -18,6 +18,7 @@ class ConversationsViewController: UIViewController {
     @IBOutlet weak var allUser: UIButton!
     @IBOutlet weak var userList: UITableView!
     var conversations = [Conversations]()
+    var groupData = [String: Any]()
     
     let allUsersInstance = AllUsersViewController()
     override func viewDidLoad() {
@@ -28,16 +29,17 @@ class ConversationsViewController: UIViewController {
         let titleView = titleOfNavigation()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleView )
         allUserButtonStyle(button: allUser)
-        
+        GroupChatManager.shared.readGroups(){ groupData in
+            self.groupData = groupData
+        }
         Manager.shared.getUserList(){ data in
-            Manager.shared.getConversations(userList: data){ conversationsList in
-                DispatchQueue.main.async {
-                     self.conversations = conversationsList
-                    self.userList.reloadData()
-                }
-              
+            Manager.shared.getConversations(userList: data, groupData: self.groupData){ conversationsList in
+                    DispatchQueue.main.async {
+                        self.conversations = conversationsList
+                        self.userList.reloadData()
+                    }
+                  
             }
-            
         }
     }
     
@@ -110,6 +112,8 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         else{
             cell.profile.image = UIImage(systemName: Keys.personWithCircle)
         }
+        
+        cell.messageTime.isHidden = row.messageTime == 0 ? true : false
         let messageTime = Manager.shared.accessTime(time: Double(row.messageTime ?? 0))
         cell.messageTime.text = messageTime
         return cell
@@ -127,6 +131,7 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
             VC?.name = row.name ?? ""
             VC?.userId = row.uid ?? ""
             VC?.roomId = row.conversationId ?? ""
+            VC?.chatType = row.chatType ?? ""
         }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
