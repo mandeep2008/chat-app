@@ -35,7 +35,6 @@ class Manager{
                         Keys.profilePicUrl: profileUrl]
             self.saveUser(userId: id, userDict: dict){userSaved in
                 if userSaved{
-                    print("saved 2")
 
                     completion(true)
                     
@@ -51,7 +50,6 @@ class Manager{
                   userDict: [String: Any],
                   completion: @escaping (_ userSaved : Bool)-> Void){
         self.ref.child(Keys.users).child(userId).setValue(userDict)
-        print("saved")
         completion(true)
     }
     
@@ -117,14 +115,11 @@ class Manager{
         self.ref.child(Keys.conversations).observe(.value, with: {snapshot in
             if snapshot.exists(){
                 if let data = snapshot.value as? [String: Any]{
-                    print(data)
                     self.saveConversationsDetails(userList: userList, groupData: groupData, snapshotData: data){ userData in
                         
                         // data parsing
                         self.dataParsing.decodeData(response: userData, model: [Conversations].self){ result in
                             guard result as? [Conversations] != nil else{return}
-                            print(result)
-                        
                             completion(result as! [Conversations])
                         }
                         
@@ -145,7 +140,6 @@ class Manager{
             }
            var dict = values
             dict[Keys.conversationId] = conversationId
-            print(values)
             if dict[Keys.chatType] != nil && dict[Keys.chatType] as! String == Keys.group{
                 for i in groupData.values{
                     let valueDict = i as? [String: Any]
@@ -185,6 +179,9 @@ class Manager{
             }
         }
     
+        userData.sort{
+            (($0[Keys.messageTime] as? Int)!) > (($1[Keys.messageTime] as? Int)!)
+        }
         completion(userData)
     }
     //MARK: get userId by spliting conversation id
@@ -309,6 +306,9 @@ class Manager{
         let dict = [Keys.lastMessage: messageData.message, Keys.messageTime: messageData.messageTime] as [String : Any]
         self.ref.child(Keys.conversations).child(conversationId).updateChildValues(dict)
     }
+    
+    
+    
 }
 
 

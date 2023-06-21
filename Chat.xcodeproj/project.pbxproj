@@ -10,6 +10,7 @@
 		000C8DA40702981A778A06FD /* Pods_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1265380F84EC17B8FB6AAA17 /* Pods_ChatTests.framework */; };
 		103046F1D747C574F196C4EA /* Pods_Chat_ChatUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 802350C04BD282BA6164B984 /* Pods_Chat_ChatUITests.framework */; };
 		4EC5B70DB2528E81498E29B7 /* Pods_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B3052430B9D98818B3EFC6D /* Pods_Chat.framework */; };
+		E154C88D2A42B9F600FF9A26 /* GroupProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E154C88C2A42B9F600FF9A26 /* GroupProfileViewController.swift */; };
 		E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */; };
 		E16998B02A0A0D070057F9C2 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */; };
 		E16998B22A0A11320057F9C2 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998B12A0A11320057F9C2 /* Manager.swift */; };
@@ -74,6 +75,7 @@
 		802350C04BD282BA6164B984 /* Pods_Chat_ChatUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chat_ChatUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B23275A051F33A964969E2B7 /* Pods-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.release.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		C8F0630D864269101EB3E6DF /* Pods-ChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.debug.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E154C88C2A42B9F600FF9A26 /* GroupProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupProfileViewController.swift; sourceTree = "<group>"; };
 		E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatManager.swift; sourceTree = "<group>"; };
 		E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsViewController.swift; sourceTree = "<group>"; };
 		E16998B12A0A11320057F9C2 /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				E1F3F8502A149B5B00926396 /* CommonViews.swift */,
 				E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */,
 				E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */,
+				E154C88C2A42B9F600FF9A26 /* GroupProfileViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -534,6 +537,7 @@
 				E1E456E52A03B69800E8B10D /* SignupViewController.swift in Sources */,
 				E1E56DB32A1CDD39002C5FB6 /* AllUsersModel.swift in Sources */,
 				E1D2FDF229FA5157009E676E /* AppDelegate.swift in Sources */,
+				E154C88D2A42B9F600FF9A26 /* GroupProfileViewController.swift in Sources */,
 				E1F3F8512A149B5B00926396 /* CommonViews.swift in Sources */,
 				E1CFFAED2A28C0DB0001527D /* DataParsing.swift in Sources */,
 				E16998B22A0A11320057F9C2 /* Manager.swift in Sources */,

@@ -92,7 +92,7 @@ extension ConversationsViewController{
 
 
  
-extension ConversationsViewController: UITableViewDelegate, UITableViewDataSource{
+extension ConversationsViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return conversations.count
     }
@@ -119,19 +119,33 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         return cell
     }
     
+   
+    
+  
+}
+
+extension ConversationsViewController: UITableViewDelegate{
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         userList.deselectRow(at: indexPath, animated: true)
         let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
         navigationController?.pushViewController(VC!, animated: true)
+        
         let row = conversations[indexPath.row]
             VC?.name = row.name ?? ""
             VC?.userId = row.uid ?? ""
             VC?.roomId = row.conversationId ?? ""
             VC?.chatType = row.chatType ?? ""
+          let conversationId = row.conversationId
+         GroupChatManager.shared.accessGroupDetailsAndPArticipants(groupData: groupData, conversationId: conversationId ?? ""){groupDetails, groupParticipants in
+             VC?.participants = groupParticipants
+             VC?.groupDetail = groupDetails
+         }
+         
         }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -141,7 +155,7 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
                     self.userList.reloadData()
                 }
             }
-            
+
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")
@@ -151,4 +165,8 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
 }
 
 
+
+extension ConversationsViewController{
+    
+}
 

@@ -8,6 +8,7 @@
 import UIKit
 import NotificationCenter
 import FirebaseAuth
+import Kingfisher
 
 class ChatRoomViewController: UIViewController {
 
@@ -16,7 +17,8 @@ class ChatRoomViewController: UIViewController {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var chatMsgList: UITableView!
     var msgArray = [MessageModel]()
-    
+    var groupDetail = [String: Any]()
+    var participants = [[String: Any]]()
     var name = ""
     var userId = ""
     var roomId = ""
@@ -40,10 +42,17 @@ class ChatRoomViewController: UIViewController {
                 self.scrollToBottom()
         }
         
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
 
         // keyboard settings
             NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        let button =  UIButton(type: .custom)
+        button.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+        button.setTitle(name, for: .normal)
+        button.addTarget(self, action: #selector(clickOnNavigationTitle), for: .touchUpInside)
+        navigationItem.titleView = button
     }
 
     
@@ -71,6 +80,9 @@ class ChatRoomViewController: UIViewController {
             scrollToBottom()
 
         }
+            
+        
+        
     }
     
     //MARK: long press gesture
@@ -105,7 +117,7 @@ class ChatRoomViewController: UIViewController {
 
 extension ChatRoomViewController{
     //MARK: cancel button
-    
+
     @objc func cancelButton(){
         self.selectionEnable = false
         self.navigationItem.rightBarButtonItems = nil
@@ -134,6 +146,16 @@ extension ChatRoomViewController{
         }
         self.selectedMsgId = []
         self.chatMsgList.reloadData()
+    }
+    
+    @objc func clickOnNavigationTitle(){
+        if chatType == "group"{
+            let vc = storyboard?.instantiateViewController(withIdentifier: "GroupProfileViewController") as? GroupProfileViewController
+            self.navigationController?.pushViewController(vc!, animated: true)
+            vc?.groupDetail = groupDetail
+            vc?.participantsList = participants
+        }
+    
     }
 }
 

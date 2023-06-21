@@ -47,8 +47,25 @@ class GroupChatManager{
                 return
             }
             print(data.values)
+            
             completion(data)
         })
+    }
+    
+    func accessGroupDetailsAndPArticipants(groupData: [String: Any], conversationId: String, completion: @escaping(_ groupDetails: [String: Any], _ participants: [[String: Any]])-> Void){
+        for i in groupData.values{
+            let valueDict = i as? [String: Any]
+            let groupDetails = valueDict?[Keys.groupDetail] as? [String: Any]
+            let participantsList = (valueDict?[Keys.participants] as? [String: Any])!
+            var groupParticipants = [[String: Any]]()
+            if groupDetails?["groupId"] as? String == conversationId{
+                for (_,value) in participantsList{
+                    groupParticipants.append((value as? [String: Any])!)
+                }
+                completion(groupDetails!,groupParticipants)
+               
+            }
+        }
     }
     
 }

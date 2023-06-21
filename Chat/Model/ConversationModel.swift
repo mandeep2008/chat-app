@@ -25,8 +25,6 @@ struct Conversations: Codable{
         self.lastMessage = try container.decodeIfPresent(String.self, forKey: .lastMessage)
         self.messageTime = try container.decodeIfPresent(Int64.self, forKey: .messageTime)
         self.chatType = try container.decodeIfPresent(String.self, forKey: .chatType)
-
     }
 }
-
 
