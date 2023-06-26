@@ -18,7 +18,7 @@ class ChatRoomViewController: UIViewController {
     @IBOutlet weak var chatMsgList: UITableView!
     var msgArray = [MessageModel]()
     var groupDetail = [String: Any]()
-    var participants = [[String: Any]]()
+    var participants = [UserDetail]()
     var name = ""
     var userId = ""
     var roomId = ""
@@ -154,6 +154,7 @@ extension ChatRoomViewController{
             self.navigationController?.pushViewController(vc!, animated: true)
             vc?.groupDetail = groupDetail
             vc?.participantsList = participants
+            
         }
     
     }

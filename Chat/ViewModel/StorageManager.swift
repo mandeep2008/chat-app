@@ -33,5 +33,20 @@ class StorageManager{
                 
             })
         }
+    
+//    func deleteImageFromFirebaseStorage(url: String){
+//        let ref = Storage.storage().reference(forURL: url)
+//        ref.delete(completion: {error in
+//            guard error != nil else {
+//                print(error)
+//                return
+//
+//            }
+//
+//            print("image delted")
+//        } )
+//    }
+    
+    
 }
 

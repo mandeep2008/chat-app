@@ -30,7 +30,7 @@ class GroupChatManager{
         let key = self.ref.child(Keys.groupChat).childByAutoId().key // access auto id 
         
         groupDetail[Keys.adminUid] = self.auth.currentUser?.uid
-        groupDetail["groupId"] = key
+        groupDetail[Keys.groupId] = key
         self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.groupDetail).setValue(groupDetail)
         
         for i in participants{
@@ -46,26 +46,69 @@ class GroupChatManager{
             guard let data = snapshot.value as? [String: Any] else {
                 return
             }
-            print(data.values)
             
             completion(data)
         })
     }
+        
+  
     
-    func accessGroupDetailsAndPArticipants(groupData: [String: Any], conversationId: String, completion: @escaping(_ groupDetails: [String: Any], _ participants: [[String: Any]])-> Void){
+    func deleteParticipant(groupId: String, completion: @escaping(_ isDeleted: Bool)-> Void){
+        
+        self.ref.child(Keys.groupChat).child(groupId).child(Keys.participants).child(auth.currentUser?.uid ?? "").removeValue(completionBlock: { error, deleted in
+            guard error != nil else {
+                return
+            }
+            completion(true)
+        })
+    }
+    func accessGroupDetailsAndParticipants(groupData: [String: Any], conversationId: String, completion: @escaping(_ groupDetails: [String: Any], _ participants: [UserDetail])-> Void){
+        var groupParticipants = [[String: Any]]()
+        var groupDetails = [String: Any]()
         for i in groupData.values{
             let valueDict = i as? [String: Any]
-            let groupDetails = valueDict?[Keys.groupDetail] as? [String: Any]
+            groupDetails = (valueDict?[Keys.groupDetail] as? [String: Any])!
             let participantsList = (valueDict?[Keys.participants] as? [String: Any])!
-            var groupParticipants = [[String: Any]]()
-            if groupDetails?["groupId"] as? String == conversationId{
+            
+           
+            if groupDetails[Keys.groupId] as? String == conversationId{
                 for (_,value) in participantsList{
                     groupParticipants.append((value as? [String: Any])!)
                 }
-                completion(groupDetails!,groupParticipants)
+                
+                dataParsing.decodeData(response: groupParticipants, model: [UserDetail].self){ participants in
+                    completion(groupDetails,participants as! [UserDetail])
+
+                }
                
             }
         }
+      
+    }
+    
+    
+    func updateParticipantsList(updatedParticipants: [[String: Any]], conversationId: String, completion: @escaping(_ isUpdated: Bool)-> Void){
+        for i in updatedParticipants{
+            self.ref.child(Keys.groupChat).child(conversationId).child(Keys.participants).child(i[Keys.userid] as! String).setValue(i, withCompletionBlock: { error, updated in
+                completion(true)
+            })
+        }
+    }
+    
+    
+    func convertSelectUserObjectToDictionary(selectedUserList: [UserDetail]) -> [[String: Any]]{
+        var participants = [[String: Any]]()
+        var dict = [String: Any]()
+        
+        for i in selectedUserList{
+            dict[Keys.name] = i.name
+            dict[Keys.email] = i.email
+            dict[Keys.userid] = i.uid
+            dict[Keys.profilePicUrl] = i.profilePicUrl
+            participants.append(dict)
+            
+        }
+        return participants
     }
     
 }

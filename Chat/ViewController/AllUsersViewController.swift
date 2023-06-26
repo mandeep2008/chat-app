@@ -27,19 +27,19 @@ class AllUsersViewController: UIViewController {
         contactList.dataSource = self
         contactList.register(UserList.nib, forCellReuseIdentifier: UserList.identifier)
         
-        let tapGesture = UITapGestureRecognizer(target:self,action:#selector(self.createGroupTap))
-        createGroupView.addGestureRecognizer(tapGesture)
         Manager.shared.getUserList(){ data in
           self.userDict = data
             self.contactList.reloadData()
 
         }
+        let tapGesture = UITapGestureRecognizer(target:self,action:#selector(self.createGroupTap))
+        createGroupView.addGestureRecognizer(tapGesture)
+       
     }
 
     @objc func createGroupTap() {
         let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
         self.navigationController?.pushViewController(vc!, animated: true)
-        vc?.userList = self.userDict
     }
 
 }

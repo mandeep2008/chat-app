@@ -154,9 +154,9 @@ class Manager{
                         })
                         
                         if map == true{
-                            dict[Keys.name] = groupDetails?["groupName"]
-                            dict[Keys.conversationId] = groupDetails?["groupId"]
-                            dict[Keys.profilePicUrl] = groupDetails?["groupIcon"]
+                            dict[Keys.name] = groupDetails?[Keys.groupName]
+                            dict[Keys.conversationId] = groupDetails?[Keys.groupId]
+                            dict[Keys.profilePicUrl] = groupDetails?[Keys.groupIcon]
                             userData.append(dict)
                         }
                     }

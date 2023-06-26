@@ -12,6 +12,7 @@ class LoginViewController: UIViewController {
 
     @IBOutlet weak var email: UITextField!
     
+    @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var password: UITextField!
     
@@ -38,8 +39,10 @@ class LoginViewController: UIViewController {
 
     @IBAction func login(_ sender: Any) {
         if email.text != nil && password.text != nil{
+            loader.isHidden = false
             Manager.shared.login(email: email.text!, password: password.text!){ success in
                 if success{
+                    self.loader.isHidden = true
                     let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
                     self.navigationController?.pushViewController(vc!, animated: true)
                 }

@@ -44,9 +44,11 @@ class Keys {
     static let ok = "OK"
     static let alertMessage = "Do you want to delete this chat?"
     static let messageDeleted = "Message Deleted"
+    static let addTitleAlertMessage = "please add title for your group"
+    
     
     // GroupChat Keys
-    
+    static let groupId = "groupId"
     static let adminUid = "adminUid"
     static let groupIcon = "groupIcon"
     static let adminName = "adminName"
@@ -54,9 +56,13 @@ class Keys {
     static let groupDetail = "GroupDetails"
     static let participants = "Participants"
     static let group = "group"
+    static let next = "Next"
+    
     
     // image/icon name
     static let personWithCircle = "person.circle"
+    static let  twoPersonImage = "person.2.circle.fill"
     static let circleInsetFilled = "circle.inset.filled"
     static let circle = "circle"
+    static let trash = "trash"
 }

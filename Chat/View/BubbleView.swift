@@ -22,7 +22,6 @@ class BubbleView: UITableViewCell {
     var checkBoxTrailingConstraints : NSLayoutConstraint?
     var checkBoxLeadingConstraints : NSLayoutConstraint?
     
-    var messageTimeLeadingConstraints : NSLayoutConstraint?
     var messageTimeTrailingConstraints : NSLayoutConstraint?
     
     var topSpaceForMessage : NSLayoutConstraint?
@@ -41,9 +40,6 @@ class BubbleView: UITableViewCell {
         
         checkBoxTrailingConstraints?.isActive = false
         checkBoxLeadingConstraints?.isActive = false
-        
-//        messageTimeLeadingConstraints?.isActive = false
-//        messageTimeTrailingConstraints?.isActive = false
     }
     override func awakeFromNib() {
         
@@ -58,7 +54,6 @@ class BubbleView: UITableViewCell {
     
     
     func updateBubblePosition(senderId: String, selectionEnable: Bool, chatType: String){
-        print(chatType)
         if senderId == Auth.auth().currentUser?.uid{
             messageView.layer.cornerRadius = messageView.frame.height/3
             messageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -88,7 +83,7 @@ class BubbleView: UITableViewCell {
             if chatType == "group"{
                 senderName.isHidden = false
                 senderName.textColor = randomColor()
-                topSpaceForMessage = message.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 20)
+                topSpaceForMessage = message.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 18)
                 topSpaceForMessage?.isActive = true
                 
                
@@ -106,18 +101,14 @@ class BubbleView: UITableViewCell {
     
     func rightBubbleConstraints(value: CGFloat){
         bubbleTrailingConstraints = messageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: value)
-        //messageTimeTrailingConstraints = messageTime.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: value)
         bubbleTrailingConstraints?.isActive = true
-       // messageTimeTrailingConstraints?.isActive = true
     
     }
     
     //MARK: left bubble constraints
     func leftBubbleConstraints(value: CGFloat){
         bubbleLeadingConstraints = messageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: value)
-       // messageTimeLeadingConstraints = messageTime.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: value)
         bubbleLeadingConstraints?.isActive = true
-        messageTimeLeadingConstraints?.isActive = true
     }
     
     func randomColor() -> UIColor{

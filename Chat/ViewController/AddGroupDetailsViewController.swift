@@ -15,6 +15,7 @@ class ParticipantsCell: UICollectionViewCell{
 }
 class AddGroupDetailsViewController: UIViewController {
 
+    @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var groupTitleTextfield: UITextField!
     @IBOutlet weak var topView: UIView!
     @IBOutlet weak var checkButton: UIButton!
@@ -39,9 +40,13 @@ class AddGroupDetailsViewController: UIViewController {
     
     
     @IBAction func createGroupButton(_ sender: Any) {
-        var participants = convertSelectUserObjectToDictionary()
+        guard groupTitleTextfield.text != "" else {
+            showEmptyTitleAlert()
+            return
+        }
+        var participants = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUserList)
         let conversationDict = [Keys.lastMessage: "" , Keys.messageTime:0, Keys.chatType: Keys.group] as [String: Any]
-
+        loader.isHidden = false
         StorageManager.shared.UploadImage(image: groupProflle.image!){ url in
             
             var groupDetail = [String: Any]()
@@ -50,30 +55,24 @@ class AddGroupDetailsViewController: UIViewController {
             groupDetail[Keys.adminName] = UserDefaults.standard.string(forKey: Keys.name)
             
             GroupChatManager.shared.createGroup(groupDetail: &groupDetail, participants: &participants){ groupId in
+                Manager.shared.createConversation(roomId: groupId, conversationDict: conversationDict)
                 let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
                 self.navigationController?.pushViewController(vc!, animated: false)
-                Manager.shared.createConversation(roomId: groupId, conversationDict: conversationDict)
+                self.loader.isHidden = true
+               
             }
         }
     }
     
-    func convertSelectUserObjectToDictionary() -> [[String: Any]]{
-        var participants = [[String: Any]]()
-        var dict = [String: Any]()
-        
-        for i in selectedUserList{
-            dict[Keys.name] = i.name
-            dict[Keys.email] = i.email
-            dict[Keys.userid] = i.uid
-            dict[Keys.profilePicUrl] = i.profilePicUrl
-            participants.append(dict)
-            
-        }
-        return participants
-    }
-    
+   
     @objc func openGallery(tapGesture: UITapGestureRecognizer){
         self.setUpImagePicker()
+    }
+    
+    func showEmptyTitleAlert(){
+        let alert = UIAlertController(title: "", message: Keys.addTitleAlertMessage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "ok", style: .default, handler: {_ in}))
+        self.present(alert, animated: true)
     }
 }
 

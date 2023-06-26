@@ -15,6 +15,7 @@ class SignupViewController: UIViewController {
     @IBOutlet weak var email: UITextField!
     @IBOutlet weak var name: UITextField!
    
+    @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var signUpButton: UIButton!
     let imagePicker = UIImagePickerController()
     override func viewDidLoad() {
@@ -32,9 +33,11 @@ class SignupViewController: UIViewController {
     
     @IBAction func signUp(_ sender: Any) {
         if email.text != nil && password.text != nil{
+            loader.isHidden = false
             StorageManager.shared.UploadImage(image: profile.image!){ url in
                 Manager.shared.signup(email: self.email.text!, password: self.password.text!, name: self.name.text ?? "", profileUrl: url){ success in
                     print("success")
+                    self.loader.isHidden = true
                     let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
                     self.navigationController?.pushViewController(vc!, animated: true)
                 }

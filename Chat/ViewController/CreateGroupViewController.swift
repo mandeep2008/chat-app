@@ -14,11 +14,26 @@ class CreateGroupViewController: UIViewController {
     @IBOutlet weak var userTableView: UITableView!
     var userList = [UserDetail] ()
     var selectedUsers = [UserDetail]()
+    var groupDetail = [String: Any]()
+    var addMoreParticipants = false
     override func viewDidLoad() {
         super.viewDidLoad()
         userTableView.delegate = self
         userTableView.dataSource = self
         userTableView.register(UserList.nib, forCellReuseIdentifier: UserList.identifier)
+        
+        Manager.shared.getUserList(){ data in
+          self.userList = data
+            self.userTableView.reloadData()
+
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+     super.viewWillDisappear(animated)
+        if addMoreParticipants{
+            navigationController?.setNavigationBarHidden(true, animated: false)
+        }
     }
     
  
@@ -62,7 +77,9 @@ extension CreateGroupViewController: UITableViewDelegate{
             self.selectedUsers.append(self.userList[indexPath.row])
         }
        
-        self.showNextBtn()
+        
+        addMoreParticipants ? self.addParticipantsButton() : self.showNextBtn()
+     
         self.userTableView.reloadData()
     }
     
@@ -76,7 +93,7 @@ extension CreateGroupViewController{
             self.navigationItem.rightBarButtonItems = nil
         }
         else{
-            let nextBtn =  UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextButton))
+            let nextBtn =  UIBarButtonItem(title: Keys.next, style: .plain, target: self, action: #selector(nextButton))
             navigationItem.rightBarButtonItems = [nextBtn]
         }
     }
@@ -85,5 +102,24 @@ extension CreateGroupViewController{
         self.navigationController?.pushViewController(vc!, animated: true)
        
         vc?.selectedUserList = selectedUsers
+    }
+    
+    func addParticipantsButton(){
+        let addBtn =  UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addButton))
+        navigationItem.rightBarButtonItems = [addBtn]
+    }
+    
+    @objc func addButton(){
+        var updatedParticipantsList = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUsers)
+       print(updatedParticipantsList)
+        
+        GroupChatManager.shared.updateParticipantsList(updatedParticipants: updatedParticipantsList, conversationId: groupDetail[Keys.groupId] as! String){ updated in
+            if updated{
+                let vc = self.storyboard?.instantiateViewController(identifier: "GroupProfileViewController") as? GroupProfileViewController
+                
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
+       
     }
 }

@@ -141,7 +141,8 @@ extension ConversationsViewController: UITableViewDelegate{
             VC?.roomId = row.conversationId ?? ""
             VC?.chatType = row.chatType ?? ""
           let conversationId = row.conversationId
-         GroupChatManager.shared.accessGroupDetailsAndPArticipants(groupData: groupData, conversationId: conversationId ?? ""){groupDetails, groupParticipants in
+    
+         GroupChatManager.shared.accessGroupDetailsAndParticipants(groupData: groupData, conversationId: conversationId ?? ""){groupDetails, groupParticipants in
              VC?.participants = groupParticipants
              VC?.groupDetail = groupDetails
          }
@@ -158,15 +159,11 @@ extension ConversationsViewController: UITableViewDelegate{
 
             completionHandler(true)
         }
-        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.image = UIImage(systemName: Keys.trash)
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
 }
 
 
-
-extension ConversationsViewController{
-    
-}
 
