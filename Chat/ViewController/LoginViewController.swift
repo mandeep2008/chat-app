@@ -18,13 +18,14 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loader.isHidden = true
         let dict = UserDefaults.standard.dictionary(forKey: Keys.defaults)
         if ((dict?[Keys.isLoggedIn] as? Bool) == true){
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
             navigationController?.pushViewController(vc!, animated: false)
         }
         
-        CommonViews.shared.signUpLoginButtonStyle(button: loginButton) 
+        self.signUpLoginButtonStyle(button: loginButton) 
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

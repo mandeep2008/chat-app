@@ -59,7 +59,7 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         }
         let row = userDict[indexPath.row]
         listCell.name.text = row.name
-        CommonViews.shared.profileImageStyle(profileImage: listCell.profile)
+        self.profileImageStyle(profileImage: listCell.profile)
         if row.profilePicUrl != nil{
             listCell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
         }

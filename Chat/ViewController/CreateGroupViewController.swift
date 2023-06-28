@@ -16,6 +16,9 @@ class CreateGroupViewController: UIViewController {
     var selectedUsers = [UserDetail]()
     var groupDetail = [String: Any]()
     var addMoreParticipants = false
+
+    var passData : (([UserDetail])-> Void)?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         userTableView.delegate = self
@@ -49,7 +52,7 @@ extension CreateGroupViewController: UITableViewDataSource{
         guard let cell = userTableView.dequeueReusableCell(withIdentifier: UserList.identifier, for: indexPath) as? UserList else{ return UITableViewCell() }
         let row = userList[indexPath.row]
         cell.name.text = row.name
-        CommonViews.shared.profileImageStyle(profileImage: cell.profile)
+        self.profileImageStyle(profileImage: cell.profile)
         if row.profilePicUrl != nil{
             cell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
         }
@@ -110,13 +113,12 @@ extension CreateGroupViewController{
     }
     
     @objc func addButton(){
-        var updatedParticipantsList = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUsers)
+        let updatedParticipantsList = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUsers)
        print(updatedParticipantsList)
         
         GroupChatManager.shared.updateParticipantsList(updatedParticipants: updatedParticipantsList, conversationId: groupDetail[Keys.groupId] as! String){ updated in
             if updated{
-                let vc = self.storyboard?.instantiateViewController(identifier: "GroupProfileViewController") as? GroupProfileViewController
-                
+                self.passData!(self.selectedUsers)
                 self.navigationController?.popViewController(animated: true)
             }
         }

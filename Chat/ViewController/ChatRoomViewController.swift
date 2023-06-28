@@ -154,7 +154,7 @@ extension ChatRoomViewController{
             self.navigationController?.pushViewController(vc!, animated: true)
             vc?.groupDetail = groupDetail
             vc?.participantsList = participants
-            
+           
         }
     
     }

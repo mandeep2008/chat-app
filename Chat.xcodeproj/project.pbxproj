@@ -10,8 +10,6 @@
 		000C8DA40702981A778A06FD /* Pods_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1265380F84EC17B8FB6AAA17 /* Pods_ChatTests.framework */; };
 		103046F1D747C574F196C4EA /* Pods_Chat_ChatUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 802350C04BD282BA6164B984 /* Pods_Chat_ChatUITests.framework */; };
 		4EC5B70DB2528E81498E29B7 /* Pods_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B3052430B9D98818B3EFC6D /* Pods_Chat.framework */; };
-		E124F1A32A44514F00AC3394 /* CustomHeaderViewForParticipantsList.xib in Resources */ = {isa = PBXBuildFile; fileRef = E124F1A22A44514F00AC3394 /* CustomHeaderViewForParticipantsList.xib */; };
-		E124F1A52A44516200AC3394 /* CustomHeaderViewForParticipantsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E124F1A42A44516200AC3394 /* CustomHeaderViewForParticipantsList.swift */; };
 		E154C88D2A42B9F600FF9A26 /* GroupProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E154C88C2A42B9F600FF9A26 /* GroupProfileViewController.swift */; };
 		E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */; };
 		E16998B02A0A0D070057F9C2 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */; };
@@ -77,8 +75,6 @@
 		802350C04BD282BA6164B984 /* Pods_Chat_ChatUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chat_ChatUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B23275A051F33A964969E2B7 /* Pods-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.release.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		C8F0630D864269101EB3E6DF /* Pods-ChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.debug.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E124F1A22A44514F00AC3394 /* CustomHeaderViewForParticipantsList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomHeaderViewForParticipantsList.xib; sourceTree = "<group>"; };
-		E124F1A42A44516200AC3394 /* CustomHeaderViewForParticipantsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderViewForParticipantsList.swift; sourceTree = "<group>"; };
 		E154C88C2A42B9F600FF9A26 /* GroupProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupProfileViewController.swift; sourceTree = "<group>"; };
 		E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatManager.swift; sourceTree = "<group>"; };
 		E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsViewController.swift; sourceTree = "<group>"; };
@@ -263,8 +259,6 @@
 				E1D96A442A172F8B000257B1 /* BubbleView.xib */,
 				E1D1F30F2A39B62A00835F91 /* UserList.swift */,
 				E1D1F3102A39B62A00835F91 /* UserList.xib */,
-				E124F1A22A44514F00AC3394 /* CustomHeaderViewForParticipantsList.xib */,
-				E124F1A42A44516200AC3394 /* CustomHeaderViewForParticipantsList.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -398,7 +392,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E124F1A32A44514F00AC3394 /* CustomHeaderViewForParticipantsList.xib in Resources */,
 				E1D1F3122A39B62A00835F91 /* UserList.xib in Resources */,
 				E1D2FDFE29FA515A009E676E /* LaunchScreen.storyboard in Resources */,
 				E1D2FDFB29FA515A009E676E /* Assets.xcassets in Resources */,
@@ -538,7 +531,6 @@
 				E1E456E32A03B67500E8B10D /* LoginViewController.swift in Sources */,
 				E1D134E62A1B87D900446B4D /* Constants.swift in Sources */,
 				E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */,
-				E124F1A52A44516200AC3394 /* CustomHeaderViewForParticipantsList.swift in Sources */,
 				E1D484B22A08B81600932F46 /* AllUsersViewController.swift in Sources */,
 				E1F922262A20D1E70072C240 /* ChatModel.swift in Sources */,
 				E1C61D012A386E53002D34FB /* CreateGroupViewController.swift in Sources */,

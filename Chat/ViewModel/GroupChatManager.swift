@@ -56,11 +56,9 @@ class GroupChatManager{
     func deleteParticipant(groupId: String, completion: @escaping(_ isDeleted: Bool)-> Void){
         
         self.ref.child(Keys.groupChat).child(groupId).child(Keys.participants).child(auth.currentUser?.uid ?? "").removeValue(completionBlock: { error, deleted in
-            guard error != nil else {
-                return
-            }
             completion(true)
-        })
+            
+        } )
     }
     func accessGroupDetailsAndParticipants(groupData: [String: Any], conversationId: String, completion: @escaping(_ groupDetails: [String: Any], _ participants: [UserDetail])-> Void){
         var groupParticipants = [[String: Any]]()

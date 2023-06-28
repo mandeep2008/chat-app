@@ -890,10 +890,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-y6-NGt">
-                                <rect key="frame" x="0.0" y="261" width="393" height="517"/>
+                                <rect key="frame" x="0.0" y="261" width="393" height="527"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1eX-TO-vtL">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="517"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="527"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <color key="sectionIndexBackgroundColor" systemColor="systemGray6Color"/>
                                         <prototypes>
@@ -924,7 +924,7 @@
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="hib-Nx-l9r">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="hib-Nx-l9r">
                                                             <rect key="frame" x="20" y="25" width="40" height="38.666666666666671"/>
                                                             <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
@@ -967,17 +967,20 @@
                                 </connections>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bVY-U1-cS8">
-                                <rect key="frame" x="10" y="788" width="373" height="40"/>
+                                <rect key="frame" x="10" y="798" width="373" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eLY-3o-LcG">
-                                        <rect key="frame" x="10" y="10" width="263" height="20"/>
+                                        <rect key="frame" x="10" y="5" width="263" height="20"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20" id="iHs-nR-tE2"/>
                                         </constraints>
                                         <color key="tintColor" systemColor="systemRedColor"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" image="rectangle.portrait.and.arrow.right" catalog="system" title=" Exit group" subtitle=""/>
+                                        <buttonConfiguration key="configuration" style="plain" title=" Exit group">
+                                            <imageReference key="image" image="rectangle.portrait.and.arrow.right" catalog="system" symbolScale="small"/>
+                                            <attributedString key="attributedSubtitle"/>
+                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="exitGroupButton:" destination="g2e-Gg-611" eventType="touchUpInside" id="THe-ab-D7j"/>
                                         </connections>
@@ -987,7 +990,7 @@
                                 <constraints>
                                     <constraint firstItem="eLY-3o-LcG" firstAttribute="centerY" secondItem="bVY-U1-cS8" secondAttribute="centerY" id="JdW-L8-1b1"/>
                                     <constraint firstItem="eLY-3o-LcG" firstAttribute="leading" secondItem="bVY-U1-cS8" secondAttribute="leading" constant="10" id="LH4-go-jdl"/>
-                                    <constraint firstAttribute="height" constant="40" id="Ugf-lp-7sn"/>
+                                    <constraint firstAttribute="height" constant="30" id="Ugf-lp-7sn"/>
                                     <constraint firstAttribute="trailing" secondItem="eLY-3o-LcG" secondAttribute="trailing" constant="100" id="sKX-CJ-kOz"/>
                                 </constraints>
                             </view>

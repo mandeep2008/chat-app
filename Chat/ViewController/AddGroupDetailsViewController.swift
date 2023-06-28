@@ -33,7 +33,7 @@ class AddGroupDetailsViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer()
         tapGesture.addTarget(self, action: #selector(self.openGallery(tapGesture:)))
         groupProflle.addGestureRecognizer(tapGesture)
-        CommonViews.shared.profileImageStyle(profileImage: groupProflle)
+        self.profileImageStyle(profileImage: groupProflle)
 
 
     }
@@ -104,7 +104,7 @@ extension AddGroupDetailsViewController: UICollectionViewDataSource, UICollectio
         }
         let item = selectedUserList[indexPath.row]
         cell.name.text = item.name
-        CommonViews.shared.profileImageStyle(profileImage: cell.profile)
+        self.profileImageStyle(profileImage: cell.profile)
         if item.profilePicUrl != nil{
             cell.profile.kf.setImage(with: URL(string: item.profilePicUrl!))
         }

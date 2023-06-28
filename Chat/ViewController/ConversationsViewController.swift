@@ -43,6 +43,14 @@ class ConversationsViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        GroupChatManager.shared.readGroups(){ groupData in
+            self.groupData = groupData
+        }
+        userList.reloadData()
+    }
+    
     
     @IBAction func allUsersButton(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "AllUsersViewController") as? AllUsersViewController
@@ -106,7 +114,7 @@ extension ConversationsViewController: UITableViewDataSource{
         cell.name.text = row.name
         cell.lastMessage.text = row.lastMessage
         if row.profilePicUrl != nil{
-            CommonViews.shared.profileImageStyle(profileImage: cell.profile)
+            self.profileImageStyle(profileImage: cell.profile)
             cell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
         }
         else{
@@ -134,7 +142,6 @@ extension ConversationsViewController: UITableViewDelegate{
         userList.deselectRow(at: indexPath, animated: true)
         let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
         navigationController?.pushViewController(VC!, animated: true)
-        
         let row = conversations[indexPath.row]
             VC?.name = row.name ?? ""
             VC?.userId = row.uid ?? ""
@@ -146,7 +153,6 @@ extension ConversationsViewController: UITableViewDelegate{
              VC?.participants = groupParticipants
              VC?.groupDetail = groupDetails
          }
-         
         }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

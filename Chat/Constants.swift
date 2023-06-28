@@ -45,6 +45,7 @@ class Keys {
     static let alertMessage = "Do you want to delete this chat?"
     static let messageDeleted = "Message Deleted"
     static let addTitleAlertMessage = "please add title for your group"
+    static let exitGroupAlert =  "Do you want to leave this group? if you will exit this group it will also remove from your conversations."
     
     
     // GroupChat Keys
@@ -63,6 +64,7 @@ class Keys {
     static let personWithCircle = "person.circle"
     static let  twoPersonImage = "person.2.circle.fill"
     static let circleInsetFilled = "circle.inset.filled"
+    static let personWithPlus = "person.crop.circle.badge.plus"
     static let circle = "circle"
     static let trash = "trash"
 }

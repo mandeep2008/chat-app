@@ -20,11 +20,11 @@ class SignupViewController: UIViewController {
     let imagePicker = UIImagePickerController()
     override func viewDidLoad() {
         super.viewDidLoad()
-        CommonViews.shared.profileImageStyle(profileImage: profile)
+       self.profileImageStyle(profileImage: profile)
         let tapGesture = UITapGestureRecognizer()
         tapGesture.addTarget(self, action: #selector(self.openGallery(tapGesture:)))
         profile.addGestureRecognizer(tapGesture)
-        CommonViews.shared.signUpLoginButtonStyle(button: signUpButton)
+        self.signUpLoginButtonStyle(button: signUpButton)
 
     }
     
