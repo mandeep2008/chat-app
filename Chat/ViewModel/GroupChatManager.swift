@@ -50,9 +50,18 @@ class GroupChatManager{
             completion(data)
         })
     }
-        
-  
     
+    //MARK: Delete group from database
+    func deleteGroup(groupId : String, completion: @escaping(_ isDeleted: Bool)-> Void){
+        self.ref.child(Keys.groupChat).child(groupId).removeValue(completionBlock: {error, isRemoved in
+            Manager.shared.deleteConversation(converstaionId: groupId, completion: { isDeleted in
+                completion(true)
+            })
+            
+        })
+    }
+  
+  //MARK: delete participants
     func deleteParticipant(groupId: String, completion: @escaping(_ isDeleted: Bool)-> Void){
         
         self.ref.child(Keys.groupChat).child(groupId).child(Keys.participants).child(auth.currentUser?.uid ?? "").removeValue(completionBlock: { error, deleted in
@@ -60,6 +69,8 @@ class GroupChatManager{
             
         } )
     }
+    
+    //MARK: acess group detail and participants
     func accessGroupDetailsAndParticipants(groupData: [String: Any], conversationId: String, completion: @escaping(_ groupDetails: [String: Any], _ participants: [UserDetail])-> Void){
         var groupParticipants = [[String: Any]]()
         var groupDetails = [String: Any]()
@@ -84,7 +95,7 @@ class GroupChatManager{
       
     }
     
-    
+    //MARK: Update participants
     func updateParticipantsList(updatedParticipants: [[String: Any]], conversationId: String, completion: @escaping(_ isUpdated: Bool)-> Void){
         for i in updatedParticipants{
             self.ref.child(Keys.groupChat).child(conversationId).child(Keys.participants).child(i[Keys.userid] as! String).setValue(i, withCompletionBlock: { error, updated in
@@ -93,7 +104,14 @@ class GroupChatManager{
         }
     }
     
+    func updateGroupDetail(groupDetail: [String: Any], completion: @escaping(_ updated: Bool)->Void){
+        let groupId = groupDetail[Keys.groupId]
+        self.ref.child(Keys.groupChat).child(groupId as! String).child(Keys.groupDetail).setValue(groupDetail, withCompletionBlock: {error , updated in
+            completion(true)
+        })
+    }
     
+    //MARK: user obejct to dictionary 
     func convertSelectUserObjectToDictionary(selectedUserList: [UserDetail]) -> [[String: Any]]{
         var participants = [[String: Any]]()
         var dict = [String: Any]()
@@ -108,6 +126,8 @@ class GroupChatManager{
         }
         return participants
     }
+    
+    
     
 }
 

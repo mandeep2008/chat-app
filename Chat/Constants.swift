@@ -42,6 +42,7 @@ class Keys {
     static let cancel = "Cancel"
     static let delete = "Delete"
     static let ok = "OK"
+    static let logoutAlertMessage =  "Do you want to logout"
     static let alertMessage = "Do you want to delete this chat?"
     static let messageDeleted = "Message Deleted"
     static let addTitleAlertMessage = "please add title for your group"

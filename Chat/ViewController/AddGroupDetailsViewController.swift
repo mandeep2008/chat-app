@@ -41,7 +41,7 @@ class AddGroupDetailsViewController: UIViewController {
     
     @IBAction func createGroupButton(_ sender: Any) {
         guard groupTitleTextfield.text != "" else {
-            showEmptyTitleAlert()
+            self.showAlert(message: Keys.addTitleAlertMessage, actionStyle: .default, alertType: .error)
             return
         }
         var participants = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUserList)
@@ -69,11 +69,6 @@ class AddGroupDetailsViewController: UIViewController {
         self.setUpImagePicker()
     }
     
-    func showEmptyTitleAlert(){
-        let alert = UIAlertController(title: "", message: Keys.addTitleAlertMessage, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "ok", style: .default, handler: {_ in}))
-        self.present(alert, animated: true)
-    }
 }
 
 extension AddGroupDetailsViewController{

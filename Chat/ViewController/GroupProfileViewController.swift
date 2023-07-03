@@ -93,14 +93,46 @@ class GroupProfileViewController: UIViewController {
         let alert = UIAlertController(title: "", message:Keys.exitGroupAlert, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-            GroupChatManager.shared.deleteParticipant(groupId: self.groupDetail[Keys.groupId] as! String, completion: { isDeleted in
-                print(isDeleted)
-                let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
-                self.navigationController?.pushViewController(vc!, animated: false)
-                
-            })
+            let currentUser: String = Manager.shared.auth.currentUser?.uid ?? ""
+            
+            if currentUser == self.groupDetail[Keys.adminUid] as! String{
+                if self.participantsList.count == 1{
+                    GroupChatManager.shared.deleteGroup(groupId: self.groupDetail[Keys.groupId] as! String, completion: {isDeletd in
+                        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
+                        self.navigationController?.pushViewController(vc!, animated: false)
+
+                        
+                    })
+                }
+                else
+                {
+                    let data = self.participantsList.first(where: {$0.uid != currentUser})
+                    self.groupDetail[Keys.adminUid] = data?.uid
+                    self.groupDetail[Keys.adminName] = data?.name
+                    
+                    GroupChatManager.shared.updateGroupDetail(groupDetail: self.groupDetail, completion: {isUpdated in
+                        if isUpdated{
+                            self.deleteParticipantsCall()
+                        }
+                    })
+                }
+            }
+            else
+            {
+                self.deleteParticipantsCall()
+            }
         }))
         self.present(alert, animated: true)
+    }
+    
+    func deleteParticipantsCall(){
+        
+        GroupChatManager.shared.deleteParticipant(groupId: self.groupDetail[Keys.groupId] as! String, completion: { isDeleted in
+            print(isDeleted)
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
+            self.navigationController?.pushViewController(vc!, animated: false)
+
+        })
     }
     
 }
@@ -185,7 +217,9 @@ extension GroupProfileViewController{
     
     @objc func buttonAction(_ button: UIButton){
         let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
-        self.navigationController?.pushViewController(vc!, animated: true)
+    self.navigationController?.pushViewController(vc!, animated: true)
+//        let navController = UINavigationController(rootViewController: vc!)
+//        self.present(navController, animated:true, completion: nil)
         vc?.selectedUsers = participantsList
         vc?.addMoreParticipants = true
         vc?.groupDetail = groupDetail

@@ -51,6 +51,7 @@ extension CreateGroupViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = userTableView.dequeueReusableCell(withIdentifier: UserList.identifier, for: indexPath) as? UserList else{ return UITableViewCell() }
         let row = userList[indexPath.row]
+
         cell.name.text = row.name
         self.profileImageStyle(profileImage: cell.profile)
         if row.profilePicUrl != nil{
@@ -77,10 +78,10 @@ extension CreateGroupViewController: UITableViewDelegate{
             guard let index = selectedUsers.firstIndex(where: { $0.uid == self.userList[indexPath.row].uid}) else { return}
             selectedUsers.remove(at: index)
         } else {
+            
             self.selectedUsers.append(self.userList[indexPath.row])
         }
        
-        
         addMoreParticipants ? self.addParticipantsButton() : self.showNextBtn()
      
         self.userTableView.reloadData()
@@ -125,3 +126,5 @@ extension CreateGroupViewController{
        
     }
 }
+
+

@@ -82,9 +82,9 @@ extension ConversationsViewController{
     }
     
     func showLogoutAlert(){
-        let alert = UIAlertController(title: "", message: "Do you want to logout", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: Keys.logoutAlertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
             var dict = UserDefaults.standard.dictionary(forKey: Keys.defaults)
             dict?[Keys.isLoggedIn] = false
             UserDefaults.standard.set(dict, forKey: Keys.defaults)

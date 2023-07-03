@@ -82,7 +82,7 @@ class BubbleView: UITableViewCell {
            
             if chatType == "group"{
                 senderName.isHidden = false
-                senderName.textColor = randomColor()
+                senderName.textColor = UIColor.random
                 topSpaceForMessage = message.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 18)
                 topSpaceForMessage?.isActive = true
                 
@@ -111,11 +111,9 @@ class BubbleView: UITableViewCell {
         bubbleLeadingConstraints?.isActive = true
     }
     
-    func randomColor() -> UIColor{
-        let red = CGFloat(drand48())
-        let green = CGFloat(drand48())
-        let blue = CGFloat(drand48())
-        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-    }
+   
     
 }
+
+
+//0.370303 0.124399 0.855199 1
