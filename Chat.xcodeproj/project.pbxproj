@@ -14,13 +14,15 @@
 		E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */; };
 		E16998B02A0A0D070057F9C2 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */; };
 		E16998B22A0A11320057F9C2 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16998B12A0A11320057F9C2 /* Manager.swift */; };
+		E16D7C0A2A53E81B00C94C59 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D7C092A53E81B00C94C59 /* UserProfileViewController.swift */; };
+		E16D7C0C2A5444A400C94C59 /* GlobalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D7C0B2A5444A400C94C59 /* GlobalData.swift */; };
 		E1C4EB272A00D55E008745D3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1C4EB262A00D55E008745D3 /* GoogleService-Info.plist */; };
 		E1C61CF72A384F18002D34FB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CF62A384F18002D34FB /* FirebaseAnalytics */; };
 		E1C61CF92A384F18002D34FB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CF82A384F18002D34FB /* FirebaseAuth */; };
 		E1C61CFB2A384F18002D34FB /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CFA2A384F18002D34FB /* FirebaseDatabase */; };
 		E1C61CFD2A384F18002D34FB /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CFC2A384F18002D34FB /* FirebaseFirestore */; };
 		E1C61CFF2A384F18002D34FB /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E1C61CFE2A384F18002D34FB /* FirebaseStorage */; };
-		E1C61D012A386E53002D34FB /* CreateGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */; };
+		E1C61D012A386E53002D34FB /* SelectUsersForGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C61D002A386E53002D34FB /* SelectUsersForGroupViewController.swift */; };
 		E1C61D052A389BE6002D34FB /* AddGroupDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */; };
 		E1CFFAED2A28C0DB0001527D /* DataParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CFFAEC2A28C0DB0001527D /* DataParsing.swift */; };
 		E1D134E62A1B87D900446B4D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D134E52A1B87D900446B4D /* Constants.swift */; };
@@ -79,8 +81,10 @@
 		E15FEA952A3AF04E00E92F6E /* GroupChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatManager.swift; sourceTree = "<group>"; };
 		E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsViewController.swift; sourceTree = "<group>"; };
 		E16998B12A0A11320057F9C2 /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		E16D7C092A53E81B00C94C59 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		E16D7C0B2A5444A400C94C59 /* GlobalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalData.swift; sourceTree = "<group>"; };
 		E1C4EB262A00D55E008745D3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewController.swift; sourceTree = "<group>"; };
+		E1C61D002A386E53002D34FB /* SelectUsersForGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectUsersForGroupViewController.swift; sourceTree = "<group>"; };
 		E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupDetailsViewController.swift; sourceTree = "<group>"; };
 		E1CFFAEC2A28C0DB0001527D /* DataParsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataParsing.swift; sourceTree = "<group>"; };
 		E1D134E52A1B87D900446B4D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -175,10 +179,11 @@
 				E16998AF2A0A0D070057F9C2 /* ConversationsViewController.swift */,
 				E1D2FE2129FA96AE009E676E /* ChatRoomViewController.swift */,
 				E1F3F8502A149B5B00926396 /* CommonViews.swift */,
-				E1C61D002A386E53002D34FB /* CreateGroupViewController.swift */,
+				E1C61D002A386E53002D34FB /* SelectUsersForGroupViewController.swift */,
 				E1C61D042A389BE6002D34FB /* AddGroupDetailsViewController.swift */,
 				E154C88C2A42B9F600FF9A26 /* GroupProfileViewController.swift */,
 				E1D484B12A08B81600932F46 /* AllUsersViewController.swift */,
+				E16D7C092A53E81B00C94C59 /* UserProfileViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -269,6 +274,7 @@
 				E1E56DB02A1CC973002C5FB6 /* ConversationModel.swift */,
 				E1E56DB22A1CDD39002C5FB6 /* AllUsersModel.swift */,
 				E1F922252A20D1E70072C240 /* ChatModel.swift */,
+				E16D7C0B2A5444A400C94C59 /* GlobalData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -527,13 +533,15 @@
 			files = (
 				E1D1F3112A39B62A00835F91 /* UserList.swift in Sources */,
 				E16998B02A0A0D070057F9C2 /* ConversationsViewController.swift in Sources */,
+				E16D7C0C2A5444A400C94C59 /* GlobalData.swift in Sources */,
 				E1D96A452A172F8B000257B1 /* BubbleView.swift in Sources */,
 				E1E456E32A03B67500E8B10D /* LoginViewController.swift in Sources */,
 				E1D134E62A1B87D900446B4D /* Constants.swift in Sources */,
 				E15FEA962A3AF04E00E92F6E /* GroupChatManager.swift in Sources */,
 				E1D484B22A08B81600932F46 /* AllUsersViewController.swift in Sources */,
 				E1F922262A20D1E70072C240 /* ChatModel.swift in Sources */,
-				E1C61D012A386E53002D34FB /* CreateGroupViewController.swift in Sources */,
+				E1C61D012A386E53002D34FB /* SelectUsersForGroupViewController.swift in Sources */,
+				E16D7C0A2A53E81B00C94C59 /* UserProfileViewController.swift in Sources */,
 				E1E456E52A03B69800E8B10D /* SignupViewController.swift in Sources */,
 				E1E56DB32A1CDD39002C5FB6 /* AllUsersModel.swift in Sources */,
 				E1D2FDF229FA5157009E676E /* AppDelegate.swift in Sources */,

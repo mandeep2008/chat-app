@@ -29,32 +29,20 @@ struct UserDetail: Codable{
     var email: String?
     var uid: String?
     var profilePicUrl: String?
-    var nameColor: TextColor?
-    
+    var about: String?
+   
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
         self.email = try container.decodeIfPresent(String.self, forKey: .email)
         self.uid = try container.decodeIfPresent(String.self, forKey: .uid)
         self.profilePicUrl = try container.decodeIfPresent(String.self, forKey: .profilePicUrl)
+        self.about = try container.decodeIfPresent(String.self, forKey: .about)
+
     }
 }
 
-struct TextColor: Codable{
-    var red: CGFloat?
-    var green: CGFloat?
-    var blue: CGFloat?
-    var alfa: Float
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.red = try container.decodeIfPresent(CGFloat.self, forKey: .red)
-        self.green = try container.decodeIfPresent(CGFloat.self, forKey: .green)
-        self.blue = try container.decodeIfPresent(CGFloat.self, forKey: .blue)
-        self.alfa = try container.decode(Float.self, forKey: .alfa)
-    }
 
-}
 
 
 

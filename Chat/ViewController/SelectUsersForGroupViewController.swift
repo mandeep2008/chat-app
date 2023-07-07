@@ -1,5 +1,5 @@
 //
-//  CreateGroupViewController.swift
+//  SelectUsersForGroupViewController.swift
 //  Chat
 //
 //  Created by Geetika on 13/06/23.
@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 
-class CreateGroupViewController: UIViewController {
+class SelectUsersForGroupViewController: UIViewController {
 
     @IBOutlet weak var userTableView: UITableView!
     var userList = [UserDetail] ()
@@ -43,7 +43,7 @@ class CreateGroupViewController: UIViewController {
 
 }
 
-extension CreateGroupViewController: UITableViewDataSource{
+extension SelectUsersForGroupViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userList.count
     }
@@ -53,6 +53,8 @@ extension CreateGroupViewController: UITableViewDataSource{
         let row = userList[indexPath.row]
 
         cell.name.text = row.name
+        cell.aboutText.text = row.about != nil ? row.about : ""
+        
         self.profileImageStyle(profileImage: cell.profile)
         if row.profilePicUrl != nil{
             cell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))
@@ -68,7 +70,7 @@ extension CreateGroupViewController: UITableViewDataSource{
 }
 
 
-extension CreateGroupViewController: UITableViewDelegate{
+extension SelectUsersForGroupViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
@@ -83,14 +85,13 @@ extension CreateGroupViewController: UITableViewDelegate{
         }
        
         addMoreParticipants ? self.addParticipantsButton() : self.showNextBtn()
-     
         self.userTableView.reloadData()
     }
     
         
 }
 
-extension CreateGroupViewController{
+extension SelectUsersForGroupViewController{
     
     func showNextBtn(){
         if selectedUsers.isEmpty{

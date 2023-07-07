@@ -7,6 +7,7 @@ target 'Chat' do
 
   # Pods for Chat
   pod 'Kingfisher', '~> 7.0'
+  pod 'IQKeyboardManagerSwift'
   target 'ChatTests' do
     inherit! :search_paths
     # Pods for testing

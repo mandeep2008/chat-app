@@ -20,6 +20,7 @@ class SignupViewController: UIViewController {
     let imagePicker = UIImagePickerController()
     override func viewDidLoad() {
         super.viewDidLoad()
+        loader.isHidden = true
        self.profileImageStyle(profileImage: profile)
         let tapGesture = UITapGestureRecognizer()
         tapGesture.addTarget(self, action: #selector(self.openGallery(tapGesture:)))

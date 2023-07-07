@@ -10,6 +10,7 @@ import Kingfisher
 
 class GroupMembersListCell: UITableViewCell{
     
+    @IBOutlet weak var aboutText: UILabel!
     @IBOutlet weak var adminLabel: UILabel!
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var profile: UIImageView!
@@ -26,14 +27,14 @@ class GroupProfileViewController: UIViewController {
     @IBOutlet weak var participantsCount: UILabel!
     @IBOutlet weak var groupTitle: UILabel!
     @IBOutlet weak var groupIcon: UIImageView!
-    
-    @IBOutlet var listLongTapGeature: UILongPressGestureRecognizer!
     var participantsList = [UserDetail]()
     var groupDetail = [String: Any]()
     var adminId = ""
     
     let currentUserId = Manager.shared.auth.currentUser?.uid ?? ""
     
+    let imagePicker = UIImagePickerController()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,11 +43,15 @@ class GroupProfileViewController: UIViewController {
         membersTableView.dataSource = self
         membersTableView.delegate = self
         
-        
+        self.profileImageStyle(profileImage: groupIcon)
+         let tapGesture = UITapGestureRecognizer()
+         tapGesture.addTarget(self, action: #selector(self.openGallery(tapGesture:)))
+         groupIcon.addGestureRecognizer(tapGesture)
         
         viewStyle(view: groupDetailView)
         viewStyle(view: participantsListView)
         adminId = groupDetail[Keys.adminUid] as? String ?? ""
+        
         if groupDetail[Keys.groupIcon] != nil{
             groupIcon.kf.setImage(with: URL(string: groupDetail[Keys.groupIcon] as! String))
             
@@ -75,9 +80,8 @@ class GroupProfileViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    
-    @IBAction func longTapGesture(_ sender: Any) {
-        print("tapped")
+    @objc func openGallery(tapGesture: UITapGestureRecognizer){
+        self.setUpImagePicker()
     }
     
     func viewStyle(view: UIView){
@@ -92,7 +96,7 @@ class GroupProfileViewController: UIViewController {
     func showLogoutAlert(){
         let alert = UIAlertController(title: "", message:Keys.exitGroupAlert, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
             let currentUser: String = Manager.shared.auth.currentUser?.uid ?? ""
             
             if currentUser == self.groupDetail[Keys.adminUid] as! String{
@@ -162,6 +166,7 @@ extension GroupProfileViewController: UITableViewDataSource{
             cell.name.text = participantsList[indexPath.row].name
             
         }
+        cell.aboutText.text = participantsList[indexPath.row].about != "" ? participantsList[indexPath.row].about : ""
         cell.adminLabel.isHidden = (participantsList[indexPath.row].uid! == adminId) ? false : true
         
         return cell
@@ -216,10 +221,8 @@ extension GroupProfileViewController{
     }
     
     @objc func buttonAction(_ button: UIButton){
-        let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
+        let vc = self.storyboard?.instantiateViewController(identifier: "SelectUsersForGroupViewController") as? SelectUsersForGroupViewController
     self.navigationController?.pushViewController(vc!, animated: true)
-//        let navController = UINavigationController(rootViewController: vc!)
-//        self.present(navController, animated:true, completion: nil)
         vc?.selectedUsers = participantsList
         vc?.addMoreParticipants = true
         vc?.groupDetail = groupDetail
@@ -231,3 +234,20 @@ extension GroupProfileViewController{
     }
 }
 
+
+extension GroupProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    func setUpImagePicker(){
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+            imagePicker.sourceType = .savedPhotosAlbum
+            imagePicker.delegate = self
+            imagePicker.isEditing = true
+
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        groupIcon.image = image
+        self.dismiss(animated: true, completion: nil)
+    }
+}

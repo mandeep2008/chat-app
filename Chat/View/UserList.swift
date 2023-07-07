@@ -14,6 +14,7 @@ class UserList: UITableViewCell {
     @IBOutlet weak var profile: UIImageView!
     @IBOutlet weak var radioButton: UIImageView!
     
+    @IBOutlet weak var aboutText: UILabel!
     static let identifier = "UserList"
     static var nib: UINib {
            return UINib(nibName: String(describing: self), bundle: nil)

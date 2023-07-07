@@ -38,7 +38,7 @@ class AllUsersViewController: UIViewController {
     }
 
     @objc func createGroupTap() {
-        let vc = self.storyboard?.instantiateViewController(identifier: "CreateGroupViewController") as? CreateGroupViewController
+        let vc = self.storyboard?.instantiateViewController(identifier: "SelectUsersForGroupViewController") as? SelectUsersForGroupViewController
         self.navigationController?.pushViewController(vc!, animated: true)
     }
 
@@ -59,6 +59,9 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         }
         let row = userDict[indexPath.row]
         listCell.name.text = row.name
+        if row.about != nil{
+            listCell.aboutText.text = row.about
+        }
         self.profileImageStyle(profileImage: listCell.profile)
         if row.profilePicUrl != nil{
             listCell.profile.kf.setImage(with: URL(string: row.profilePicUrl!))

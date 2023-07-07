@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class UserListCell: UITableViewCell{
     @IBOutlet weak var messageTime: UILabel!
@@ -19,8 +20,10 @@ class ConversationsViewController: UIViewController {
     @IBOutlet weak var userList: UITableView!
     var conversations = [Conversations]()
     var groupData = [String: Any]()
-    
     let allUsersInstance = AllUsersViewController()
+    var currentUserDetail = [String: Any]()
+  
+    let imageView = UIImageView(image: UIImage(systemName: Keys.personWithCircle))
     override func viewDidLoad() {
         super.viewDidLoad()
         userList.delegate = self
@@ -28,11 +31,34 @@ class ConversationsViewController: UIViewController {
         self.navigationItem.setHidesBackButton(true, animated: true)
         let titleView = titleOfNavigation()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleView )
+
+      
+        imageView.frame.size.width = 30
+        imageView.frame.size.height = 30
+               let item = UIBarButtonItem(customView: imageView)
+               self.navigationItem.rightBarButtonItem = item
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileButtonPressed(_:)))
+        imageView.addGestureRecognizer(tapGestureRecognizer)
+        self.profileImageStyle(profileImage: imageView)
         allUserButtonStyle(button: allUser)
+        
+        
         GroupChatManager.shared.readGroups(){ groupData in
             self.groupData = groupData
         }
-        Manager.shared.getUserList(){ data in
+        Manager.shared.getUserList(){ data  in
+            self.currentUserDetail = GlobalData.shared.userDetail!
+//            if currentUserDetail[Keys.profilePicUrl] != nil{
+//
+//                self.imageView.kf.setImage(with: URL(string: currentUserDetail[Keys.profilePicUrl] as! String))
+//                self.profileImageStyle(profileImage: self.imageView)
+//            }
+//            else
+//            {
+                self.imageView.image = UIImage(systemName: Keys.personWithCircle)
+
+//          }
+
             Manager.shared.getConversations(userList: data, groupData: self.groupData){ conversationsList in
                     DispatchQueue.main.async {
                         self.conversations = conversationsList
@@ -41,6 +67,7 @@ class ConversationsViewController: UIViewController {
                   
             }
         }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,28 +75,30 @@ class ConversationsViewController: UIViewController {
         GroupChatManager.shared.readGroups(){ groupData in
             self.groupData = groupData
         }
+//        self.profileImageStyle(profileImage: imageView)
         userList.reloadData()
     }
     
     
     @IBAction func allUsersButton(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "AllUsersViewController") as? AllUsersViewController
-          navigationController?.pushViewController(vc!, animated: true)
+        navigationController?.pushViewController(vc!, animated: true)
         
     }
-    @IBAction func logoutButton(_ sender: Any) {
-        showLogoutAlert()
-          
-    }
     
+   @objc func profileButtonPressed(_ sender: UITapGestureRecognizer) {
+
+       let vc = self.storyboard?.instantiateViewController(withIdentifier: "UserProfileViewController") as? UserProfileViewController
+       self.navigationController?.pushViewController(vc!, animated: true)
+        }
 }
 
 //MARK: view(allUserButton , title)
 extension ConversationsViewController{
     func allUserButtonStyle(button: UIButton){
         button.layer.shadowColor = UIColor.darkGray.cgColor
-        button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 2.0, height: 3.0)
+        button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 6.0
         button.layer.cornerRadius = button.frame.size.width/2
     }
@@ -81,19 +110,6 @@ extension ConversationsViewController{
         return(label)
     }
     
-    func showLogoutAlert(){
-        let alert = UIAlertController(title: "", message: Keys.logoutAlertMessage, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
-        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
-            var dict = UserDefaults.standard.dictionary(forKey: Keys.defaults)
-            dict?[Keys.isLoggedIn] = false
-            UserDefaults.standard.set(dict, forKey: Keys.defaults)
-            Manager.shared.signout()
-            let vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
-            self.navigationController?.pushViewController(vc!, animated: false)
-        }))
-        self.present(alert, animated: true)
-    }
     
 }
 

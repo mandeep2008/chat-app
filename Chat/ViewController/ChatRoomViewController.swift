@@ -14,6 +14,7 @@ class ChatRoomViewController: UIViewController {
 
     @IBOutlet weak var textfieldBottomConstraints: NSLayoutConstraint!
     
+    @IBOutlet weak var sendBtn: UIButton!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var chatMsgList: UITableView!
     var msgArray = [MessageModel]()
@@ -39,9 +40,11 @@ class ChatRoomViewController: UIViewController {
             self.msgArray = data
             self.chatMsgList.reloadData()
                self.bottomScroll()
-                self.scrollToBottom()
+                self.scrollToBottomWhenKeyboardOpen()
         }
         
+        
+
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
 
         // keyboard settings
@@ -55,6 +58,10 @@ class ChatRoomViewController: UIViewController {
         navigationItem.titleView = button
     }
 
+  
+    @IBAction func textFieldChanged(_ sender: Any) {
+        sendBtn.isEnabled = textField.text != "" ? true : false
+    }
     
     @IBAction func sendButton(_ sender: Any) {
 
@@ -77,7 +84,7 @@ class ChatRoomViewController: UIViewController {
             textField.text = nil
             chatMsgList.reloadData()
             bottomScroll()
-            scrollToBottom()
+            scrollToBottomWhenKeyboardOpen()
 
         }
             
@@ -100,7 +107,7 @@ class ChatRoomViewController: UIViewController {
     
     
    
-    func scrollToBottom(){
+    func scrollToBottomWhenKeyboardOpen(){
         DispatchQueue.main.async {
                 let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
                 self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
@@ -219,6 +226,7 @@ extension ChatRoomViewController{
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
            return
         }
+        scrollToBottomWhenKeyboardOpen()
         let bottomSafeArea = self.view.safeAreaInsets.bottom
         self.textfieldBottomConstraints.constant = keyboardSize.height - bottomSafeArea
     }

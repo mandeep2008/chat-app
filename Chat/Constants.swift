@@ -16,6 +16,7 @@ class Keys {
     static let userid = "uid"
     static let isLoggedIn = "isLoggedIn"
     static let defaults = "defaults"
+    static let about = "about"
     
     // database name
     static let users = "Users"

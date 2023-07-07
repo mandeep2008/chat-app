@@ -80,7 +80,7 @@ class Manager{
     
    
     //MARK: get list of all users
-    func getUserList(completion:@escaping (_ data: [UserDetail])-> Void ){
+    func getUserList(completion:@escaping (_ data: [UserDetail])-> Void){
         
         self.ref.child(Keys.users).getData(completion:  {  error, result in
             guard let values = result?.value, let usersList = values as? [String: Any]  else {
@@ -88,6 +88,7 @@ class Manager{
                 return
             }
             var userListValues = [[String: Any]]()
+
             usersList.values.forEach({ i in
                 let dict = i as? [String: Any]
                 if (dict?[Keys.userid] as? String ?? "") != (self.auth.currentUser?.uid as? String ?? ""){
@@ -95,6 +96,7 @@ class Manager{
                 }
                 else
                 {
+                    GlobalData.shared.userDetail = dict!
                    //  current loogged in user name using for message sendBy and sendTo
                     UserDefaults.standard.set(dict?[Keys.name], forKey: Keys.name)
                     UserDefaults.standard.set(dict?[Keys.profilePicUrl], forKey: Keys.profilePicUrl)
@@ -303,10 +305,18 @@ class Manager{
     //MARK: update last message in conversations
     
     func updateConversationLastMessage(messageData: MessageModel, conversationId: String){
-        let dict = [Keys.lastMessage: messageData.message, Keys.messageTime: messageData.messageTime] as [String : Any]
+        let dict = [Keys.lastMessage: messageData.message!, Keys.messageTime: messageData.messageTime!] as [String : Any]
         self.ref.child(Keys.conversations).child(conversationId).updateChildValues(dict)
     }
     
+    func updateUserProfile(dict: [String: Any], completion: @escaping ()->()){
+        let userId = dict[Keys.userid]
+        self.ref.child(Keys.users).child(userId as! String).updateChildValues(dict, withCompletionBlock: {
+            error,_ in
+            print("changed")
+            completion()
+        })
+    }
     
     
 }
