@@ -28,7 +28,7 @@ class AllUsersViewController: UIViewController {
         contactList.register(UserList.nib, forCellReuseIdentifier: UserList.identifier)
         
         Manager.shared.getUserList(){ data in
-          self.userDict = data
+            self.userDict = data
             self.contactList.reloadData()
 
         }
@@ -58,6 +58,7 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
             return UITableViewCell()
         }
         let row = userDict[indexPath.row]
+        
         listCell.name.text = row.name
         if row.about != nil{
             listCell.aboutText.text = row.about

@@ -86,7 +86,14 @@ class GroupChatManager{
                 }
                 
                 dataParsing.decodeData(response: groupParticipants, model: [UserDetail].self){ participants in
-                    completion(groupDetails,participants as! [UserDetail])
+                
+                    let currentUser = (participants as! [UserDetail]).filter({($0.uid == self.auth.currentUser?.uid ?? "")})
+                    let otherMembers = (participants as! [UserDetail]).filter({$0.uid != self.auth.currentUser?.uid ?? ""})
+                    var data = [UserDetail]()
+                    data.insert(contentsOf: currentUser, at: 0)
+                    data.append(contentsOf: otherMembers.sorted { $0.name ?? "" < $1.name ?? ""})
+                    
+               completion(groupDetails,data)
 
                 }
                

@@ -106,7 +106,7 @@ extension SelectUsersForGroupViewController{
         let vc = self.storyboard?.instantiateViewController(identifier: "AddGroupDetailsViewController") as? AddGroupDetailsViewController
         self.navigationController?.pushViewController(vc!, animated: true)
        
-        vc?.selectedUserList = selectedUsers
+        vc?.selectedUserList = selectedUsers.sorted { $0.name ?? "" < $1.name ?? "" }
     }
     
     func addParticipantsButton(){

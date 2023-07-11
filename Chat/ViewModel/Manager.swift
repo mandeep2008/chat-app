@@ -106,7 +106,9 @@ class Manager{
             
             self.dataParsing.decodeData(response: userListValues, model: [UserDetail].self){ result in
                 guard result as? [UserDetail] != nil else{return}
-                completion(result as! [UserDetail])
+                let data: [UserDetail] = (result as! [UserDetail]).sorted { $0.name ?? "" < $1.name ?? ""}
+                
+                completion(data)
             }
 
         })

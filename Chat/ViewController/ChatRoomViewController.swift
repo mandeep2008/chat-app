@@ -160,6 +160,7 @@ extension ChatRoomViewController{
             let vc = storyboard?.instantiateViewController(withIdentifier: "GroupProfileViewController") as? GroupProfileViewController
             self.navigationController?.pushViewController(vc!, animated: true)
             vc?.groupDetail = groupDetail
+            
             vc?.participantsList = participants
            
         }

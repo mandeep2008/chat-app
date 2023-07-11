@@ -73,7 +73,7 @@ class GroupProfileViewController: UIViewController {
     
     
     @IBAction func exitGroupButton(_ sender: Any) {
-        showLogoutAlert()
+        showAlert()
     }
     
     @IBAction func backButton(_ sender: Any) {
@@ -93,7 +93,7 @@ class GroupProfileViewController: UIViewController {
     
     
     
-    func showLogoutAlert(){
+    func showAlert(){
         let alert = UIAlertController(title: "", message:Keys.exitGroupAlert, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
