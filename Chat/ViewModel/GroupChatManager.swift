@@ -102,7 +102,7 @@ class GroupChatManager{
       
     }
     
-    //MARK: Update participants
+    //MARK: Update participants and group detail 
     func updateParticipantsList(updatedParticipants: [[String: Any]], conversationId: String, completion: @escaping(_ isUpdated: Bool)-> Void){
         for i in updatedParticipants{
             self.ref.child(Keys.groupChat).child(conversationId).child(Keys.participants).child(i[Keys.userid] as! String).setValue(i, withCompletionBlock: { error, updated in

@@ -102,6 +102,7 @@ extension SelectUsersForGroupViewController{
             navigationItem.rightBarButtonItems = [nextBtn]
         }
     }
+    
     @objc func nextButton(){
         let vc = self.storyboard?.instantiateViewController(identifier: "AddGroupDetailsViewController") as? AddGroupDetailsViewController
         self.navigationController?.pushViewController(vc!, animated: true)
@@ -116,7 +117,6 @@ extension SelectUsersForGroupViewController{
     
     @objc func addButton(){
         let updatedParticipantsList = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUsers)
-       print(updatedParticipantsList)
         
         GroupChatManager.shared.updateParticipantsList(updatedParticipants: updatedParticipantsList, conversationId: groupDetail[Keys.groupId] as! String){ updated in
             if updated{

@@ -11,7 +11,7 @@ class UserProfileViewController: UIViewController {
 
     @IBOutlet weak var profilePicture: UIImageView!
     
-    @IBOutlet weak var loader: UIActivityIndicatorView!
+ //   @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var emailTextfield: UITextField!
     @IBOutlet weak var nameTextfield: UITextField!
     
@@ -25,7 +25,7 @@ class UserProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         imagePicker.delegate = self
-        loader.isHidden = true
+      //  loader.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: false)
         profilePicture.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(openGallery(_:)))
@@ -70,7 +70,7 @@ class UserProfileViewController: UIViewController {
     }
     
     @IBAction func saveChanges(_ sender: Any) {
-        loader.isHidden = false
+        //loader.isHidden = false
         guard profilePicture.image != nil else{return}
         StorageManager.shared.UploadImage(image: profilePicture.image!){ url in
             let dict = [
@@ -81,7 +81,7 @@ class UserProfileViewController: UIViewController {
                 Keys.userid: self.userDetail[Keys.userid] ?? ""]
             Manager.shared.updateUserProfile(dict: dict){
                 GlobalData.shared.userDetail = dict
-                self.loader.isHidden = true
+        //        self.loader.isHidden = true
                 
             }
             

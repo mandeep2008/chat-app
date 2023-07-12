@@ -39,8 +39,6 @@ class ChatRoomViewController: UIViewController {
         Manager.shared.readData(roomId: self.roomId){ data in
             self.msgArray = data
             self.chatMsgList.reloadData()
-               self.bottomScroll()
-                self.scrollToBottomWhenKeyboardOpen()
         }
         
         
@@ -77,14 +75,14 @@ class ChatRoomViewController: UIViewController {
                            Keys.messageTime: sendMessageTime] as [String : Any]
             Manager.shared.saveMsg(roomId: roomId, msgDict: &msgDict)
      
-            let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime, "chatType": chatType == "group" ? "group" : "single"] as [String : Any]
+            let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime, Keys.chatType: chatType == "group" ? "group" : "single"] as [String : Any]
             
-                Manager.shared.createConversation(roomId: roomId, conversationDict: conversationDict)
+            Manager.shared.createConversation(roomId: roomId, conversationDict: conversationDict)
             
             textField.text = nil
             chatMsgList.reloadData()
-            bottomScroll()
-            scrollToBottomWhenKeyboardOpen()
+            bottomScrollWhenKeyboardOpen()
+          //  scrollToBottom()
 
         }
             
@@ -100,22 +98,22 @@ class ChatRoomViewController: UIViewController {
         }
         self.selectionEnable = true
         let cancelButton =  UIBarButtonItem(title: Keys.cancel, style: .plain, target: self, action: #selector(cancelButton))
-        let deleteButton =  UIBarButtonItem(title: Keys.delete, style: .plain, target: self, action: #selector(DeleteButton))
+        let deleteButton =  UIBarButtonItem(title: Keys.delete, style: .plain, target: self, action: #selector(deleteButton))
         navigationItem.rightBarButtonItems = [cancelButton, deleteButton]
                 self.chatMsgList.reloadData()
     }
     
     
    
-    func scrollToBottomWhenKeyboardOpen(){
-        DispatchQueue.main.async {
-                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
-                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
-             
-        }
-    }
+//    func scrollToBottom(){
+//        DispatchQueue.main.async {
+//                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
+//                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//
+//        }
+//    }
     
-    func bottomScroll(){
+    func bottomScrollWhenKeyboardOpen(){
         chatMsgList.setContentOffset(CGPoint(x: 0, y:self.chatMsgList.contentSize.height - self.chatMsgList.bounds.size.height), animated: false)
     }
 
@@ -132,7 +130,7 @@ extension ChatRoomViewController{
         self.chatMsgList.reloadData()
     }
     //MARK: Delete Button
-    @objc func DeleteButton(){
+    @objc func deleteButton(){
         Manager.shared.deleteMessage(conversationId: roomId, selectedMsgArray: selectedMsgId)
                 self.navigationItem.rightBarButtonItems = nil
                 self.deleteMessage()
@@ -227,7 +225,7 @@ extension ChatRoomViewController{
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
            return
         }
-        scrollToBottomWhenKeyboardOpen()
+      //  scrollToBottom()
         let bottomSafeArea = self.view.safeAreaInsets.bottom
         self.textfieldBottomConstraints.constant = keyboardSize.height - bottomSafeArea
     }

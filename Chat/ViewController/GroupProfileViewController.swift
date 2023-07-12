@@ -159,13 +159,9 @@ extension GroupProfileViewController: UITableViewDataSource{
         {
             cell.profile.image = UIImage(systemName: Keys.personWithCircle)
         }
-        if participantsList[indexPath.row].uid! == Manager.shared.auth.currentUser?.uid ?? ""{
-            cell.name.text = "You"
-        }
-        else{
-            cell.name.text = participantsList[indexPath.row].name
-            
-        }
+        
+        cell.name.text = (participantsList[indexPath.row].uid! == Manager.shared.auth.currentUser?.uid ?? "") ? "You" : participantsList[indexPath.row].name
+       
         cell.aboutText.text = participantsList[indexPath.row].about != "" ? participantsList[indexPath.row].about : ""
         cell.adminLabel.isHidden = (participantsList[indexPath.row].uid! == adminId) ? false : true
         

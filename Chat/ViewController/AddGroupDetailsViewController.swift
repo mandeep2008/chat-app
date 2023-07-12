@@ -41,7 +41,6 @@ class AddGroupDetailsViewController: UIViewController {
     
     @IBAction func createGroupButton(_ sender: Any) {
         guard groupTitleTextfield.text != "" else {
-            self.showAlert(message: Keys.addTitleAlertMessage, actionStyle: .default, alertType: .error)
             return
         }
         var participants = GroupChatManager.shared.convertSelectUserObjectToDictionary(selectedUserList: selectedUserList)

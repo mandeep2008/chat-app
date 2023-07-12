@@ -20,7 +20,6 @@ class ConversationsViewController: UIViewController {
     @IBOutlet weak var userList: UITableView!
     var conversations = [Conversations]()
     var groupData = [String: Any]()
-    let allUsersInstance = AllUsersViewController()
     var currentUserDetail = [String: Any]()
   
     let imageView = UIImageView(image: UIImage(systemName: Keys.personWithCircle))
@@ -29,14 +28,15 @@ class ConversationsViewController: UIViewController {
         userList.delegate = self
         userList.dataSource = self
         self.navigationItem.setHidesBackButton(true, animated: true)
+        
         let titleView = titleOfNavigation()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleView )
 
-      
+      // navigation bar right button user profile
         imageView.frame.size.width = 30
         imageView.frame.size.height = 30
-               let item = UIBarButtonItem(customView: imageView)
-               self.navigationItem.rightBarButtonItem = item
+        let item = UIBarButtonItem(customView: imageView)
+        self.navigationItem.rightBarButtonItem = item
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileButtonPressed(_:)))
         imageView.addGestureRecognizer(tapGestureRecognizer)
         self.profileImageStyle(profileImage: imageView)
@@ -47,18 +47,8 @@ class ConversationsViewController: UIViewController {
             self.groupData = groupData
         }
         Manager.shared.getUserList(){ data  in
+            guard GlobalData.shared.userDetail != nil else{return}
             self.currentUserDetail = GlobalData.shared.userDetail!
-//            if currentUserDetail[Keys.profilePicUrl] != nil{
-//
-//                self.imageView.kf.setImage(with: URL(string: currentUserDetail[Keys.profilePicUrl] as! String))
-//                self.profileImageStyle(profileImage: self.imageView)
-//            }
-//            else
-//            {
-                self.imageView.image = UIImage(systemName: Keys.personWithCircle)
-
-//          }
-
             Manager.shared.getConversations(userList: data, groupData: self.groupData){ conversationsList in
                     DispatchQueue.main.async {
                         self.conversations = conversationsList
@@ -69,16 +59,6 @@ class ConversationsViewController: UIViewController {
         }
         
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        GroupChatManager.shared.readGroups(){ groupData in
-            self.groupData = groupData
-        }
-//        self.profileImageStyle(profileImage: imageView)
-        userList.reloadData()
-    }
-    
     
     @IBAction func allUsersButton(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "AllUsersViewController") as? AllUsersViewController
@@ -114,7 +94,7 @@ extension ConversationsViewController{
 }
 
 
-
+// conversation list
  
 extension ConversationsViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -173,11 +153,17 @@ extension ConversationsViewController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-            Manager.shared.deleteConversation(converstaionId: self.conversations[indexPath.row].conversationId ?? ""){ isDeleted in
-                if isDeleted{
-                    self.userList.reloadData()
+            if self.conversations[indexPath.row].chatType == "group" {
+            
+            }
+            else{
+                Manager.shared.deleteConversation(converstaionId: self.conversations[indexPath.row].conversationId ?? ""){ isDeleted in
+                    if isDeleted{
+                        self.userList.reloadData()
+                    }
                 }
             }
+          
 
             completionHandler(true)
         }
@@ -185,6 +171,17 @@ extension ConversationsViewController: UITableViewDelegate{
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
+}
+
+extension ConversationsViewController{
+    func showAlert(){
+        let alert = UIAlertController(title: "", message:Keys.exitGroupAlert, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
+       
+    }))
+                                     
+   }
 }
 
 
