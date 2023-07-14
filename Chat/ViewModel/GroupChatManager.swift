@@ -19,25 +19,28 @@ class GroupChatManager{
     //MARK: create group
     func createGroup(groupDetail: inout [String:Any],
                     participants: inout [[String: Any]],
-                     completion: @escaping (_ groupId : String)-> Void)
-    {
+                     completion: @escaping (_ groupId : String)-> Void){
+        
         let currentLoginUserDict = [Keys.name: UserDefaults.standard.string(forKey: Keys.name),
                                     Keys.email: auth.currentUser?.email,
                                     Keys.userid: auth.currentUser?.uid,
                                     Keys.profilePicUrl: UserDefaults.standard.string(forKey: Keys.profilePicUrl)]
+        
         participants.append(currentLoginUserDict as [String: Any])
     
         let key = self.ref.child(Keys.groupChat).childByAutoId().key // access auto id 
         
         groupDetail[Keys.adminUid] = self.auth.currentUser?.uid
         groupDetail[Keys.groupId] = key
+        
+        // add group detail
         self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.groupDetail).setValue(groupDetail)
         
+        // add participants
         for i in participants{
             self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.participants).child(i[Keys.userid] as! String).setValue(i)
         }
         completion(key ?? "")
-        print("saved")
     }
     
     //MARK: read groups list
@@ -71,9 +74,14 @@ class GroupChatManager{
     }
     
     //MARK: acess group detail and participants
-    func accessGroupDetailsAndParticipants(groupData: [String: Any], conversationId: String, completion: @escaping(_ groupDetails: [String: Any], _ participants: [UserDetail])-> Void){
+    func accessGroupDetailsAndParticipants(groupData: [String: Any],
+                                           conversationId: String,
+                                           completion: @escaping(_ groupDetails: [String: Any],
+                                                                 _ participants: [UserDetail])-> Void){
+        
         var groupParticipants = [[String: Any]]()
         var groupDetails = [String: Any]()
+        
         for i in groupData.values{
             let valueDict = i as? [String: Any]
             groupDetails = (valueDict?[Keys.groupDetail] as? [String: Any])!
@@ -102,7 +110,7 @@ class GroupChatManager{
       
     }
     
-    //MARK: Update participants and group detail 
+    //MARK: Update participants
     func updateParticipantsList(updatedParticipants: [[String: Any]], conversationId: String, completion: @escaping(_ isUpdated: Bool)-> Void){
         for i in updatedParticipants{
             self.ref.child(Keys.groupChat).child(conversationId).child(Keys.participants).child(i[Keys.userid] as! String).setValue(i, withCompletionBlock: { error, updated in
@@ -111,6 +119,7 @@ class GroupChatManager{
         }
     }
     
+    //MARK: Update group details
     func updateGroupDetail(groupDetail: [String: Any], completion: @escaping(_ updated: Bool)->Void){
         let groupId = groupDetail[Keys.groupId]
         self.ref.child(Keys.groupChat).child(groupId as! String).child(Keys.groupDetail).setValue(groupDetail, withCompletionBlock: {error , updated in

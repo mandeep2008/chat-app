@@ -23,23 +23,30 @@ class ConversationsViewController: UIViewController {
     var currentUserDetail = [String: Any]()
   
     let imageView = UIImageView(image: UIImage(systemName: Keys.personWithCircle))
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         userList.delegate = self
         userList.dataSource = self
-        self.navigationItem.setHidesBackButton(true, animated: true)
         
+        self.navigationItem.setHidesBackButton(true, animated: true)
         let titleView = titleOfNavigation()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleView )
 
-      // navigation bar right button user profile
-        imageView.frame.size.width = 30
-        imageView.frame.size.height = 30
-        let item = UIBarButtonItem(customView: imageView)
-        self.navigationItem.rightBarButtonItem = item
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileButtonPressed(_:)))
-        imageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        let containerView = UIControl(frame: CGRect.init(x: 0, y: 0, width: 30, height: 30))
+        containerView.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        let imageView = UIImageView(frame: CGRect.init(x: 0, y: 0, width: 30, height: 30))
+        imageView.image = UIImage(systemName: Keys.personWithCircle)
+        imageView.contentMode = .scaleAspectFill 
+        containerView.addSubview(imageView)
         self.profileImageStyle(profileImage: imageView)
+        let item = UIBarButtonItem(customView: containerView)
+        item.width = 20
+        navigationItem.rightBarButtonItem = item
+        
+      
+
         allUserButtonStyle(button: allUser)
         
         
@@ -49,6 +56,10 @@ class ConversationsViewController: UIViewController {
         Manager.shared.getUserList(){ data  in
             guard GlobalData.shared.userDetail != nil else{return}
             self.currentUserDetail = GlobalData.shared.userDetail!
+            if GlobalData.shared.userDetail?[Keys.profilePicUrl] != nil{
+                imageView.kf.setImage(with: URL(string: GlobalData.shared.userDetail?[Keys.profilePicUrl] as! String))
+                
+            }
             Manager.shared.getConversations(userList: data, groupData: self.groupData){ conversationsList in
                     DispatchQueue.main.async {
                         self.conversations = conversationsList
@@ -59,7 +70,7 @@ class ConversationsViewController: UIViewController {
         }
         
     }
-    
+ 
     @IBAction func allUsersButton(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "AllUsersViewController") as? AllUsersViewController
         navigationController?.pushViewController(vc!, animated: true)
@@ -73,16 +84,16 @@ class ConversationsViewController: UIViewController {
         }
 }
 
-//MARK: view(allUserButton , title)
+//MARK: view style(allUserButton , title)
 extension ConversationsViewController{
-    func allUserButtonStyle(button: UIButton){
+    private func allUserButtonStyle(button: UIButton){
         button.layer.shadowColor = UIColor.darkGray.cgColor
         button.layer.shadowOffset = CGSize(width: 2.0, height: 3.0)
         button.layer.shadowOpacity = 0.5
         button.layer.shadowRadius = 6.0
         button.layer.cornerRadius = button.frame.size.width/2
     }
-    func titleOfNavigation()-> UIView{
+    private func titleOfNavigation()-> UIView{
         let label = UILabel()
         label.layer.frame = CGRect(x: 20, y: 0, width: 30, height: 20)
         label.textColor = UIColor.white
@@ -90,6 +101,7 @@ extension ConversationsViewController{
         return(label)
     }
     
+  
     
 }
 
@@ -174,7 +186,7 @@ extension ConversationsViewController: UITableViewDelegate{
 }
 
 extension ConversationsViewController{
-    func showAlert(){
+   private func showAlert(){
         let alert = UIAlertController(title: "", message:Keys.exitGroupAlert, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in

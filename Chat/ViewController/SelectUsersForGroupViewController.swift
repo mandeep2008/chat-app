@@ -93,7 +93,7 @@ extension SelectUsersForGroupViewController: UITableViewDelegate{
 
 extension SelectUsersForGroupViewController{
     
-    func showNextBtn(){
+    private func showNextBtn(){
         if selectedUsers.isEmpty{
             self.navigationItem.rightBarButtonItems = nil
         }
@@ -110,7 +110,7 @@ extension SelectUsersForGroupViewController{
         vc?.selectedUserList = selectedUsers.sorted { $0.name ?? "" < $1.name ?? "" }
     }
     
-    func addParticipantsButton(){
+    private func addParticipantsButton(){
         let addBtn =  UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addButton))
         navigationItem.rightBarButtonItems = [addBtn]
     }

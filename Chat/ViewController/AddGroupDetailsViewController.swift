@@ -71,14 +71,14 @@ class AddGroupDetailsViewController: UIViewController {
 }
 
 extension AddGroupDetailsViewController{
-    func topViewStyle(view: UIView){
+    private func topViewStyle(view: UIView){
         view.layer.cornerRadius = view.frame.height / 9
         view.layer.shadowColor = UIColor.gray.cgColor
         view.layer.shadowOpacity = 0.2
         view.layer.shadowOffset = .zero
     }
     
-    func checkButtonStyle(button: UIButton){
+    private func checkButtonStyle(button: UIButton){
         button.layer.cornerRadius = button.frame.height/2
         button.layer.shadowColor = UIColor.darkGray.cgColor
         button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)

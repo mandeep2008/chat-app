@@ -38,11 +38,11 @@ class ChatRoomViewController: UIViewController {
         title = name
         Manager.shared.readData(roomId: self.roomId){ data in
             self.msgArray = data
+            self.scrollToBottom()
+        
             self.chatMsgList.reloadData()
         }
         
-        
-
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
 
         // keyboard settings
@@ -75,19 +75,18 @@ class ChatRoomViewController: UIViewController {
                            Keys.messageTime: sendMessageTime] as [String : Any]
             Manager.shared.saveMsg(roomId: roomId, msgDict: &msgDict)
      
-            let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime, Keys.chatType: chatType == "group" ? "group" : "single"] as [String : Any]
+            let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime, Keys.chatType: chatType == Keys.group ? "group" : "single"] as [String : Any]
             
             Manager.shared.createConversation(roomId: roomId, conversationDict: conversationDict)
             
             textField.text = nil
             chatMsgList.reloadData()
+            sendBtn.isEnabled = false
             bottomScrollWhenKeyboardOpen()
-          //  scrollToBottom()
+            scrollToBottom()
 
         }
             
-        
-        
     }
     
     //MARK: long press gesture
@@ -105,15 +104,17 @@ class ChatRoomViewController: UIViewController {
     
     
    
-//    func scrollToBottom(){
-//        DispatchQueue.main.async {
-//                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
-//                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
-//
-//        }
-//    }
+    private func scrollToBottom(){
+        DispatchQueue.main.async {
+            if self.msgArray.count > 1{
+                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
+                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+
+        }
+    }
     
-    func bottomScrollWhenKeyboardOpen(){
+    private func bottomScrollWhenKeyboardOpen(){
         chatMsgList.setContentOffset(CGPoint(x: 0, y:self.chatMsgList.contentSize.height - self.chatMsgList.bounds.size.height), animated: false)
     }
 
@@ -137,7 +138,7 @@ extension ChatRoomViewController{
     }
     
     //MARK: show alert
-    func deleteMessage(){
+   private func deleteMessage(){
         self.selectionEnable = false
         for i in self.selectedMsgId{
             self.msgArray.removeAll(where: {$0.msgId == i.msgId})
@@ -225,7 +226,7 @@ extension ChatRoomViewController{
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
            return
         }
-      //  scrollToBottom()
+      scrollToBottom()
         let bottomSafeArea = self.view.safeAreaInsets.bottom
         self.textfieldBottomConstraints.constant = keyboardSize.height - bottomSafeArea
     }
@@ -236,11 +237,7 @@ extension ChatRoomViewController{
     
 }
 
-extension Date {
-    func toMillis() -> Int64! {
-        return Int64(self.timeIntervalSince1970 * 1000)
-    }
-}
+
 
 
 

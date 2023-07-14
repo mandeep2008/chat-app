@@ -12,8 +12,6 @@ extension UIViewController{
     
     func profileImageStyle(profileImage: UIImageView){
         profileImage.layer.masksToBounds = false
-//        profileImage.layer.borderColor = UIColor.white.cgColor
-//        profileImage.layer.borderWidth = 0.5
         profileImage.layer.cornerRadius = profileImage.frame.size.width/2
         profileImage.contentMode = .scaleAspectFill
         profileImage.clipsToBounds = true
@@ -29,29 +27,15 @@ extension UIViewController{
     
   
     // global alert---
-    enum alertType{
-        case error, logout , delete
-    }
     
-    func showAlert(message: String, title: String = "Alert", actionStyle: UIAlertAction.Style, alertType: alertType){
+    func showAlert(message: String,
+                   title: String = "Alert",
+                   actionStyle: UIAlertAction.Style){
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-    
-//        switch(alertType){
-//        case .error:
-//            let action1 = UIAlertAction(title: "OK", style: actionStyle, handler: {_ in})
-//            alert.addAction(action1)
-//        case.logout:
-//            let action1 = UIAlertAction(title: "No", style: actionStyle, handler: {_ in})
-//            let action2 = UIAlertAction(title: "Yes", style: actionStyle, handler: {_ in})
-//            alert.addAction(action1)
-//            alert.addAction(action2)
-//        case.delete:
-//            let action1 = UIAlertAction(title: "No", style: actionStyle, handler: {_ in})
-//            let action2 = UIAlertAction(title: "Yes", style: actionStyle, handler: {_ in})
-//            alert.addAction(action1)
-//            alert.addAction(action2)
-//        }
+        let action = UIAlertAction(title: "OK", style: actionStyle, handler: {_ in})
+              alert.addAction(action)
+
         self.present(alert, animated: true, completion: nil)
     }
 }
@@ -68,7 +52,11 @@ extension UIColor {
     }
 }
 
-
+extension Date {
+    func toMillis() -> Int64! {
+        return Int64(self.timeIntervalSince1970 * 1000)
+    }
+}
 
 extension UITextField{
     
@@ -103,3 +91,22 @@ extension UITextField{
         self.resignFirstResponder()
     }
 }
+
+
+//extension UITextField{
+//    func isValid(email: String) -> String
+//    {
+//        var returnValue = "Valid Email"
+//        let emailRegEx = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
+//        let regex = try! NSRegularExpression(pattern: emailRegEx)
+//        let nsRange = NSRange(location: 0, length: email.count)
+//        let results = regex.matches(in: email, range: nsRange)
+//        if results.count == 0
+//        {
+//            returnValue = "Invalid Email"
+//        }
+//        return  returnValue
+//    }
+//}
+
+

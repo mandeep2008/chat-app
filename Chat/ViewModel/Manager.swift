@@ -21,10 +21,11 @@ class Manager{
                 password: String,
                 name : String,
                 profileUrl: String,
-                completion: @escaping (_ success: Bool)-> Void){
+                completion: @escaping (_ success: Bool, _ failure: String)-> Void){
         
         auth.createUser(withEmail: email, password: password){ result, error in
             guard let result = result?.user  else {
+                completion(false, error?.localizedDescription ?? "")
                 return
             }
             let id = result.uid
@@ -36,7 +37,7 @@ class Manager{
             self.saveUser(userId: id, userDict: dict){userSaved in
                 if userSaved{
 
-                    completion(true)
+                    completion(true, "")
                     
                 }
             }
@@ -55,15 +56,21 @@ class Manager{
     
     //MARK: Login
     
-    func login(email: String, password: String, completion: @escaping (_ success: Bool)-> Void){
+    func login(email: String,
+               password: String,
+               completion: @escaping (_ success: Bool, _ failure: String)-> Void){
+        
         auth.signIn(withEmail: email, password: password){ result, error in
             guard let result = result?.user else{
+                completion(false, error?.localizedDescription ?? "")
                 return
             }
             //MARK: userdefault data
-            let userDict = [Keys.userid: result.uid, Keys.email: result.email ?? "", Keys.isLoggedIn: true]
+            let userDict = [Keys.userid: result.uid,
+                            Keys.email: result.email ?? "",
+                            Keys.isLoggedIn: true]
             UserDefaults.standard.set(userDict, forKey: Keys.defaults)
-                completion(true)
+                completion(true, "")
         }
     }
     
@@ -88,7 +95,7 @@ class Manager{
                 return
             }
             var userListValues = [[String: Any]]()
-
+        
             usersList.values.forEach({ i in
                 let dict = i as? [String: Any]
                 if (dict?[Keys.userid] as? String ?? "") != (self.auth.currentUser?.uid as? String ?? ""){
@@ -104,6 +111,7 @@ class Manager{
                 
             })
             
+            // data parsing of conversation list of current login users
             self.dataParsing.decodeData(response: userListValues, model: [UserDetail].self){ result in
                 guard result as? [UserDetail] != nil else{return}
                 let data: [UserDetail] = (result as! [UserDetail]).sorted { $0.name ?? "" < $1.name ?? ""}
@@ -121,10 +129,11 @@ class Manager{
                 if let data = snapshot.value as? [String: Any]{
                     self.saveConversationsDetails(userList: userList, groupData: groupData, snapshotData: data){ userData in
                         
-                        // data parsing
+                        // data parsing of conversations list
                         self.dataParsing.decodeData(response: userData, model: [Conversations].self){ result in
                             guard result as? [Conversations] != nil else{return}
                             completion(result as! [Conversations])
+                            
                         }
                         
                     }
@@ -133,8 +142,12 @@ class Manager{
         })
     }
     
-//MARK: save conversation details from conversations List and user detail from all user list
-    func saveConversationsDetails(userList: [UserDetail],groupData: [String: Any],snapshotData: [String: Any], completion: @escaping(_ userData: [[String: Any]])-> Void){
+//MARK: save conversation details from conversations List of current login user conversations and user detail from all user list
+    func saveConversationsDetails(userList: [UserDetail],
+                                  groupData: [String: Any],
+                                  snapshotData: [String: Any],
+                                  completion: @escaping(_ userData: [[String: Any]])-> Void){
+        
         var userData = [[String: Any]]()
 
         for (conversationId,value) in snapshotData{
@@ -144,13 +157,15 @@ class Manager{
             }
            var dict = values
             dict[Keys.conversationId] = conversationId
-            if dict[Keys.chatType] != nil && dict[Keys.chatType] as! String == Keys.group{
+            
+            if (dict[Keys.chatType] != nil) && ((dict[Keys.chatType] as! String) == Keys.group){
+
                 for i in groupData.values{
                     let valueDict = i as? [String: Any]
                     let groupDetails = valueDict?[Keys.groupDetail] as? [String: Any]
                     let participantsList = valueDict?[Keys.participants] as? [String: Any]
                     
-                    if groupDetails?["groupId"] as! String == conversationId{
+                    if groupDetails?[Keys.groupId] as! String == conversationId{
                         // check whether group contains loggedin user uid or not
                         let map =  participantsList.map({
                             $0.contains(where: {$0.key == self.auth.currentUser?.uid
@@ -186,6 +201,7 @@ class Manager{
         userData.sort{
             (($0[Keys.messageTime] as? Int)!) > (($1[Keys.messageTime] as? Int)!)
         }
+    
         completion(userData)
     }
     //MARK: get userId by spliting conversation id
@@ -273,12 +289,14 @@ class Manager{
     
     //MARK: delete conversations
     func deleteConversation(converstaionId : String, completion: @escaping (_ isDeleted: Bool)-> Void){
+        // delete chat
         self.ref.child(Keys.chats).child(converstaionId).removeValue(completionBlock: { error , result in
             guard error == nil else{
                 print(error?.localizedDescription as Any)
                 return
             }
         })
+        // delete conversations
         self.ref.child(Keys.conversations).child(converstaionId).removeValue(completionBlock: { error, databaseRef in
             guard error == nil else{
                 return

@@ -84,7 +84,7 @@ class GroupProfileViewController: UIViewController {
         self.setUpImagePicker()
     }
     
-    func viewStyle(view: UIView){
+    private func viewStyle(view: UIView){
         view.layer.shadowColor = UIColor.darkGray.cgColor
         view.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
         view.layer.shadowOpacity = 0.3
@@ -93,7 +93,7 @@ class GroupProfileViewController: UIViewController {
     
     
     
-    func showAlert(){
+    private func showAlert(){
         let alert = UIAlertController(title: "", message:Keys.exitGroupAlert, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
@@ -129,7 +129,7 @@ class GroupProfileViewController: UIViewController {
         self.present(alert, animated: true)
     }
     
-    func deleteParticipantsCall(){
+    private func deleteParticipantsCall(){
         
         GroupChatManager.shared.deleteParticipant(groupId: self.groupDetail[Keys.groupId] as! String, completion: { isDeleted in
             print(isDeleted)
@@ -197,14 +197,14 @@ extension GroupProfileViewController: UITableViewDelegate{
 //MARK: Header view
 extension GroupProfileViewController{
     
-    func headerTitle(view: UIView){
+    private func headerTitle(view: UIView){
         let titleLabel = UILabel()
         titleLabel.frame = CGRect(x: 11, y: 10, width:170, height: 18)
         titleLabel.text = Keys.participants
         titleLabel.font = titleLabel.font.withSize(16)
         view.addSubview(titleLabel)
     }
-    func addParticipantsButton(view: UIView){
+    private func addParticipantsButton(view: UIView){
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: Keys.personWithPlus), for: .normal)
         button.tintColor = UIColor.systemGreen

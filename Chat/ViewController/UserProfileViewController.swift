@@ -11,7 +11,8 @@ class UserProfileViewController: UIViewController {
 
     @IBOutlet weak var profilePicture: UIImageView!
     
- //   @IBOutlet weak var loader: UIActivityIndicatorView!
+    @IBOutlet weak var scrollView: UIScrollView!
+     @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var emailTextfield: UITextField!
     @IBOutlet weak var nameTextfield: UITextField!
     
@@ -24,8 +25,11 @@ class UserProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+       
+
         imagePicker.delegate = self
-      //  loader.isHidden = true
+       loader.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: false)
         profilePicture.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(openGallery(_:)))
@@ -33,7 +37,7 @@ class UserProfileViewController: UIViewController {
         
         
         self.profileImageStyle(profileImage: profilePicture)
-        self.viewStyle(view: profileVIew)
+        self.viewStyle(view: scrollView)
         if GlobalData.shared.userDetail != nil{
             userDetail = GlobalData.shared.userDetail!
         }
@@ -70,7 +74,7 @@ class UserProfileViewController: UIViewController {
     }
     
     @IBAction func saveChanges(_ sender: Any) {
-        //loader.isHidden = false
+      loader.isHidden = false
         guard profilePicture.image != nil else{return}
         StorageManager.shared.UploadImage(image: profilePicture.image!){ url in
             let dict = [
@@ -81,7 +85,7 @@ class UserProfileViewController: UIViewController {
                 Keys.userid: self.userDetail[Keys.userid] ?? ""]
             Manager.shared.updateUserProfile(dict: dict){
                 GlobalData.shared.userDetail = dict
-        //        self.loader.isHidden = true
+                self.loader.isHidden = true
                 
             }
             
@@ -111,7 +115,7 @@ class UserProfileViewController: UIViewController {
 }
 
 extension UserProfileViewController{
-    func viewStyle(view: UIView){
+    private func viewStyle(view: UIView){
         view.layer.cornerRadius = 30
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.layer.shadowColor = UIColor.darkGray.cgColor
@@ -120,7 +124,7 @@ extension UserProfileViewController{
         view.layer.shadowRadius = 6.0
     }
     
-    func textViewStyle(textView: UIView){       
+    private func textViewStyle(textView: UIView){
         textView.layer.cornerRadius = 10
         textView.clipsToBounds = true
         textView.layer.borderColor = UIColor.gray.cgColor
@@ -128,7 +132,7 @@ extension UserProfileViewController{
     }
     
     
-    func showLogoutAlert(){
+    private func showLogoutAlert(){
         let alert = UIAlertController(title: "", message: Keys.logoutAlertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
