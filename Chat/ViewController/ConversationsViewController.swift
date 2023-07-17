@@ -69,6 +69,7 @@ class ConversationsViewController: UIViewController {
             }
         }
         
+        
     }
  
     @IBAction func allUsersButton(_ sender: Any) {
@@ -148,18 +149,19 @@ extension ConversationsViewController: UITableViewDelegate{
     
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         userList.deselectRow(at: indexPath, animated: true)
-        let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
-        navigationController?.pushViewController(VC!, animated: true)
+        let vc = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
+        navigationController?.pushViewController(vc!, animated: true)
         let row = conversations[indexPath.row]
-            VC?.name = row.name ?? ""
-            VC?.userId = row.uid ?? ""
-            VC?.roomId = row.conversationId ?? ""
-            VC?.chatType = row.chatType ?? ""
-          let conversationId = row.conversationId
+         vc?.name = row.name ?? ""
+         vc?.userId = row.uid ?? ""
+         vc?.roomId = row.conversationId ?? ""
+         vc?.chatType = row.chatType ?? ""
+         vc?.profilePic = row.profilePicUrl ?? ""
+        let conversationId = row.conversationId
     
          GroupChatManager.shared.accessGroupDetailsAndParticipants(groupData: groupData, conversationId: conversationId ?? ""){groupDetails, groupParticipants in
-             VC?.participants = groupParticipants
-             VC?.groupDetail = groupDetails
+             vc?.participants = groupParticipants
+             vc?.groupDetail = groupDetails
          }
         }
     

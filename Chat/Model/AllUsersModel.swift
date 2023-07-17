@@ -30,6 +30,7 @@ struct UserDetail: Codable{
     var uid: String?
     var profilePicUrl: String?
     var about: String?
+    var isOnline: Bool?
    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -38,6 +39,7 @@ struct UserDetail: Codable{
         self.uid = try container.decodeIfPresent(String.self, forKey: .uid)
         self.profilePicUrl = try container.decodeIfPresent(String.self, forKey: .profilePicUrl)
         self.about = try container.decodeIfPresent(String.self, forKey: .about)
+        self.isOnline = try container.decodeIfPresent(Bool.self, forKey: .isOnline)
 
     }
 }

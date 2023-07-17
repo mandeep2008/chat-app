@@ -26,6 +26,11 @@ class LoginViewController: UIViewController {
         if ((dict?[Keys.isLoggedIn] as? Bool) == true){
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
             navigationController?.pushViewController(vc!, animated: false)
+            
+            Manager.shared.online(uid: (Manager.shared.auth.currentUser?.uid)!, status: true){ (success) in
+                print("User ==>", success)
+            }
+            
         }
         
         self.passwordViewStyle(view: passwordView)
@@ -53,6 +58,11 @@ class LoginViewController: UIViewController {
                 if success{
                   self.loader.isHidden = true
                     let vc = self.storyboard?.instantiateViewController(withIdentifier: "ConversationsViewController") as? ConversationsViewController
+                    
+                    Manager.shared.online(uid: (Manager.shared.auth.currentUser?.uid)!, status: true){ (success) in
+                        print("User ==>", success)
+                    }
+                    
                     self.navigationController?.pushViewController(vc!, animated: true)
                 }
                 else{

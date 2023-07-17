@@ -9,6 +9,7 @@ import UIKit
 import NotificationCenter
 import FirebaseAuth
 import Kingfisher
+import IQKeyboardManagerSwift
 
 class ChatRoomViewController: UIViewController {
 
@@ -22,20 +23,24 @@ class ChatRoomViewController: UIViewController {
     var participants = [UserDetail]()
     var name = ""
     var userId = ""
+    var profilePic = ""
     var roomId = ""
     var chatType = ""
     var sendMessageTime  = Int64()
     var selectedMsgId = [MessageModel]()
     var selectionEnable = false
-    
+    let customNavBarViewInstance = ChatRoomNavigationBarView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         chatMsgList.delegate = self
         chatMsgList.dataSource = self
         chatMsgList.register(BubbleView.nib, forCellReuseIdentifier: BubbleView.identifier)
-
-        title = name
+        if userId != ""{
+            Manager.shared.callWhenStatusUpdate(uid: userId){_ in
+                
+            }
+        }
         Manager.shared.readData(roomId: self.roomId){ data in
             self.msgArray = data
             self.scrollToBottom()
@@ -43,17 +48,43 @@ class ChatRoomViewController: UIViewController {
             self.chatMsgList.reloadData()
         }
         
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
+        //MARK: Navigation bar view
+        let backButton = UIButton()
+        backButton.setImage(UIImage(systemName: "arrow.backward"), for: .normal)
+        let leftItem1 = UIBarButtonItem(customView: backButton)
+        backButton.addTarget(self, action: #selector(leftBackButton), for: .touchUpInside)
+        
+        let leftItem2 = UIBarButtonItem(customView: customNavBarViewInstance)
+        customNavBarViewInstance.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(clickOnNavigationBar(_:)))
+        customNavBarViewInstance.addGestureRecognizer(tap)
+        if profilePic != ""{
+            customNavBarViewInstance.profilePic.kf.setImage(with: URL(string: profilePic))
+            profileImageStyle(profileImage: customNavBarViewInstance.profilePic)
+        }
+        else{
+            customNavBarViewInstance.profilePic.image = UIImage(systemName: Keys.personWithCircle)
+        }
+        
+        customNavBarViewInstance.userName.text = name
+        customNavBarViewInstance.status.isHidden = groupDetail[Keys.chatType] as! String == Keys.groupChat ? true : false
+        navigationItem.leftBarButtonItems = [leftItem1, leftItem2]
 
+        
         // keyboard settings
             NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        let button =  UIButton(type: .custom)
-        button.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        button.setTitle(name, for: .normal)
-        button.addTarget(self, action: #selector(clickOnNavigationTitle), for: .touchUpInside)
-        navigationItem.titleView = button
+
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        IQKeyboardManager.shared.enable = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        IQKeyboardManager.shared.enable = true
     }
 
   
@@ -100,6 +131,10 @@ class ChatRoomViewController: UIViewController {
         let deleteButton =  UIBarButtonItem(title: Keys.delete, style: .plain, target: self, action: #selector(deleteButton))
         navigationItem.rightBarButtonItems = [cancelButton, deleteButton]
                 self.chatMsgList.reloadData()
+    }
+    
+    @objc private func leftBackButton (){
+        self.navigationController?.popViewController(animated: true)
     }
     
     
@@ -154,7 +189,8 @@ extension ChatRoomViewController{
         self.chatMsgList.reloadData()
     }
     
-    @objc func clickOnNavigationTitle(){
+    @objc func clickOnNavigationBar(_ sender: UITapGestureRecognizer){
+        print("tapped")
         if chatType == "group"{
             let vc = storyboard?.instantiateViewController(withIdentifier: "GroupProfileViewController") as? GroupProfileViewController
             self.navigationController?.pushViewController(vc!, animated: true)

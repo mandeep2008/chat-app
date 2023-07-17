@@ -133,6 +133,7 @@ extension UserProfileViewController{
     
     
     private func showLogoutAlert(){
+        let currentUser = Manager.shared.auth.currentUser?.uid ?? ""
         let alert = UIAlertController(title: "", message: Keys.logoutAlertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: {_ in}))
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
@@ -142,6 +143,9 @@ extension UserProfileViewController{
             Manager.shared.signout()
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
             self.navigationController?.pushViewController(vc!, animated: false)
+        
+            Manager.shared.online(uid: currentUser , status: false, success: {_ in
+                })
         }))
         self.present(alert, animated: true)
     }

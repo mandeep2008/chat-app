@@ -339,6 +339,27 @@ class Manager{
     }
     
     
+    
+    
+         func online(uid: String, status: Bool, success: @escaping (Bool) -> Void) {
+            //True == Online, False == Offline
+             let onlinesRef = ref.child(Keys.users).child(uid).child("isOnline")
+            onlinesRef.setValue(status) {(error, _ ) in
+
+                if let error = error {
+                    assertionFailure(error.localizedDescription)
+                    success(false)
+                }
+                success(true)
+            }
+        }
+    
+    func callWhenStatusUpdate(uid: String,completion: @escaping(Bool)-> Void){
+        self.ref.child("Users").child(uid).observe(.childChanged, with: { data in
+            
+          
+        })
+    }
 }
 
 
@@ -364,26 +385,3 @@ class Manager{
 
 
 
-//             GroupChatManager.shared.readGroups(){ data in
-//                // access group details and participants list
-//                    for i in data.values{
-//                        let valueDict = i as? [String: Any]
-//
-//                        let groupDetails = valueDict?[Keys.groupDetail] as? [String: Any]
-//                        let participantsList = valueDict?[Keys.participants] as? [String: Any]
-//
-//                        // check whether group contains loggedin user uid or not
-//                      let map =  participantsList.map({
-//                            $0.contains(where: {$0.key == self.auth.currentUser?.uid
-//                          })
-//                        })
-//
-//                        if map == true{
-//                            dict[Keys.name] = groupDetails?["groupName"]
-//                            dict[Keys.conversationId] = groupDetails?["groupId"]
-//                            dict[Keys.profilePicUrl] = groupDetails?["groupIcon"]
-//                            userData.append(dict)
-//                        }
-//                    }
-//
-//                }

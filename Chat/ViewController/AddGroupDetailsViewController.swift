@@ -71,7 +71,7 @@ class AddGroupDetailsViewController: UIViewController {
 }
 
 extension AddGroupDetailsViewController{
-    private func topViewStyle(view: UIView){
+    private      func topViewStyle(view: UIView){
         view.layer.cornerRadius = view.frame.height / 9
         view.layer.shadowColor = UIColor.gray.cgColor
         view.layer.shadowOpacity = 0.2

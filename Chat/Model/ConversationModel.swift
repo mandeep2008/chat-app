@@ -16,6 +16,7 @@ struct Conversations: Codable{
     var messageTime: Int64?
     var chatType: String?
     
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.conversationId = try container.decodeIfPresent(String.self, forKey: .conversationId)
