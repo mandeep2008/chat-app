@@ -115,7 +115,7 @@ class Manager{
             self.dataParsing.decodeData(response: userListValues, model: [UserDetail].self){ result in
                 guard result as? [UserDetail] != nil else{return}
                 let data: [UserDetail] = (result as! [UserDetail]).sorted { $0.name ?? "" < $1.name ?? ""}
-                
+                GlobalData.shared.allUserList = data
                 completion(data)
             }
 
@@ -123,7 +123,8 @@ class Manager{
     }
 
     //MARK: get conversations of current login user
-    func getConversations(userList: [UserDetail],groupData: [String: Any], completion: @escaping (_ userData: [Conversations])-> Void){
+    func getConversations(groupData: [String: Any], completion: @escaping (_ userData: [Conversations])-> Void){
+        let userList = GlobalData.shared.allUserList
         self.ref.child(Keys.conversations).observe(.value, with: {snapshot in
             if snapshot.exists(){
                 if let data = snapshot.value as? [String: Any]{
@@ -204,6 +205,8 @@ class Manager{
     
         completion(userData)
     }
+    
+    
     //MARK: get userId by spliting conversation id
     func accessUserId(id: String, competion: (_ id: String)->Void){
         var userId = ""
@@ -333,7 +336,6 @@ class Manager{
         let userId = dict[Keys.userid]
         self.ref.child(Keys.users).child(userId as! String).updateChildValues(dict, withCompletionBlock: {
             error,_ in
-            print("changed")
             completion()
         })
     }

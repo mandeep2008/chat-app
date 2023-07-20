@@ -27,11 +27,7 @@ class AllUsersViewController: UIViewController {
         contactList.dataSource = self
         contactList.register(UserList.nib, forCellReuseIdentifier: UserList.identifier)
         
-        Manager.shared.getUserList(){ data in
-            self.userDict = data
-            self.contactList.reloadData()
-
-        }
+        userDict = GlobalData.shared.allUserList
         let tapGesture = UITapGestureRecognizer(target:self,action:#selector(self.createGroupTap))
         createGroupView.addGestureRecognizer(tapGesture)
        
@@ -86,13 +82,14 @@ extension AllUsersViewController: UITableViewDelegate, UITableViewDataSource{
         let row = userDict[indexPath.row]
 
         contactList.deselectRow(at: indexPath, animated: true)
-        let VC = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
-        VC?.name = row.name ?? ""
-        VC?.userId = row.uid ?? ""
+        let vc = self.storyboard?.instantiateViewController(identifier: "ChatRoomViewController") as? ChatRoomViewController
+        vc?.name = row.name ?? ""
+        vc?.userId = row.uid ?? ""
         Manager.shared.checkconversation(selectedUserId: row.uid ?? ""){ roomId in
-                        VC?.roomId = roomId
-                        self.navigationController?.pushViewController(VC!, animated: true)
+            vc?.roomId = roomId
+                        self.navigationController?.pushViewController(vc!, animated: true)
             }
+        vc?.profilePic = row.profilePicUrl ?? ""
 
     }
 

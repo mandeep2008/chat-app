@@ -24,12 +24,7 @@ class SelectUsersForGroupViewController: UIViewController {
         userTableView.delegate = self
         userTableView.dataSource = self
         userTableView.register(UserList.nib, forCellReuseIdentifier: UserList.identifier)
-        
-        Manager.shared.getUserList(){ data in
-          self.userList = data
-            self.userTableView.reloadData()
-
-        }
+        userList = GlobalData.shared.allUserList
     }
     
     override func viewWillDisappear(_ animated: Bool) {

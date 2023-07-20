@@ -60,7 +60,7 @@ class ConversationsViewController: UIViewController {
                 imageView.kf.setImage(with: URL(string: GlobalData.shared.userDetail?[Keys.profilePicUrl] as! String))
                 
             }
-            Manager.shared.getConversations(userList: data, groupData: self.groupData){ conversationsList in
+            Manager.shared.getConversations(groupData: self.groupData){ conversationsList in
                     DispatchQueue.main.async {
                         self.conversations = conversationsList
                         self.userList.reloadData()

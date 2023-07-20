@@ -151,7 +151,7 @@ extension GroupProfileViewController: UITableViewDataSource{
         
         let profileUrl = participantsList[indexPath.row].profilePicUrl
         self.profileImageStyle(profileImage: cell.profile)
-        
+        print(profileUrl)
         if profileUrl != nil{
             cell.profile.kf.setImage(with: URL(string: profileUrl ?? ""))
         }

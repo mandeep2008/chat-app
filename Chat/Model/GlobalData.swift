@@ -11,4 +11,5 @@ class GlobalData{
     static let shared = GlobalData()
     
     var userDetail:[String:Any]?
+    var allUserList = [UserDetail]()
 }

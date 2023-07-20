@@ -277,8 +277,8 @@
 		E1E56DAF2A1CC957002C5FB6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E1E56DB02A1CC973002C5FB6 /* ConversationModel.swift */,
 				E1E56DB22A1CDD39002C5FB6 /* AllUsersModel.swift */,
+				E1E56DB02A1CC973002C5FB6 /* ConversationModel.swift */,
 				E1F922252A20D1E70072C240 /* ChatModel.swift */,
 				E16D7C0B2A5444A400C94C59 /* GlobalData.swift */,
 			);

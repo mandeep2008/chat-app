@@ -38,6 +38,7 @@ class GroupChatManager{
         
         // add participants
         for i in participants{
+        
             self.ref.child(Keys.groupChat).child(key ?? "").child(Keys.participants).child(i[Keys.userid] as! String).setValue(i)
         }
         completion(key ?? "")
@@ -100,7 +101,6 @@ class GroupChatManager{
                     var data = [UserDetail]()
                     data.insert(contentsOf: currentUser, at: 0)
                     data.append(contentsOf: otherMembers.sorted { $0.name ?? "" < $1.name ?? ""})
-                    
                completion(groupDetails,data)
 
                 }

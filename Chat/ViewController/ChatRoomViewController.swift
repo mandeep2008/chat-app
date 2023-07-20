@@ -12,7 +12,7 @@ import Kingfisher
 import IQKeyboardManagerSwift
 
 class ChatRoomViewController: UIViewController {
-
+    
     @IBOutlet weak var textfieldBottomConstraints: NSLayoutConstraint!
     
     @IBOutlet weak var sendBtn: UIButton!
@@ -44,7 +44,7 @@ class ChatRoomViewController: UIViewController {
         Manager.shared.readData(roomId: self.roomId){ data in
             self.msgArray = data
             self.scrollToBottom()
-        
+            
             self.chatMsgList.reloadData()
         }
         
@@ -65,16 +65,15 @@ class ChatRoomViewController: UIViewController {
         else{
             customNavBarViewInstance.profilePic.image = UIImage(systemName: Keys.personWithCircle)
         }
-        
+        customNavBarViewInstance.frame = CGRect(x: 0, y: 0, width: self.view.frame.width - 50, height: 60)
         customNavBarViewInstance.userName.text = name
-        customNavBarViewInstance.status.isHidden = groupDetail[Keys.chatType] as! String == Keys.groupChat ? true : false
         navigationItem.leftBarButtonItems = [leftItem1, leftItem2]
-
+        
         
         // keyboard settings
-            NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -86,14 +85,14 @@ class ChatRoomViewController: UIViewController {
         super.viewWillDisappear(animated)
         IQKeyboardManager.shared.enable = true
     }
-
-  
+    
+    
     @IBAction func textFieldChanged(_ sender: Any) {
         sendBtn.isEnabled = textField.text != "" ? true : false
     }
     
     @IBAction func sendButton(_ sender: Any) {
-
+        
         if textField.text != ""{
             
             self.sendMessageTime = Date().toMillis()
@@ -105,7 +104,7 @@ class ChatRoomViewController: UIViewController {
                            Keys.sendTo: self.name,
                            Keys.messageTime: sendMessageTime] as [String : Any]
             Manager.shared.saveMsg(roomId: roomId, msgDict: &msgDict)
-     
+            
             let conversationDict = [Keys.lastMessage: textField.text ?? "",  Keys.messageTime: sendMessageTime, Keys.chatType: chatType == Keys.group ? "group" : "single"] as [String : Any]
             
             Manager.shared.createConversation(roomId: roomId, conversationDict: conversationDict)
@@ -115,12 +114,32 @@ class ChatRoomViewController: UIViewController {
             sendBtn.isEnabled = false
             bottomScrollWhenKeyboardOpen()
             scrollToBottom()
-
-        }
             
+        }
+        
     }
     
-    //MARK: long press gesture
+    
+    private func scrollToBottom(){
+        DispatchQueue.main.async {
+            if self.msgArray.count > 1{
+                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
+                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+            
+        }
+    }
+    
+    private func bottomScrollWhenKeyboardOpen(){
+        chatMsgList.setContentOffset(CGPoint(x: 0, y:self.chatMsgList.contentSize.height - self.chatMsgList.bounds.size.height), animated: false)
+    }
+    
+    
+}
+
+//MARK: long press gesture and single tap gesture
+
+extension ChatRoomViewController{
     
     @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
         guard (sender.view?.tag) != nil else {
@@ -130,55 +149,50 @@ class ChatRoomViewController: UIViewController {
         let cancelButton =  UIBarButtonItem(title: Keys.cancel, style: .plain, target: self, action: #selector(cancelButton))
         let deleteButton =  UIBarButtonItem(title: Keys.delete, style: .plain, target: self, action: #selector(deleteButton))
         navigationItem.rightBarButtonItems = [cancelButton, deleteButton]
-                self.chatMsgList.reloadData()
+        self.chatMsgList.reloadData()
     }
     
     @objc private func leftBackButton (){
         self.navigationController?.popViewController(animated: true)
     }
     
-    
-   
-    private func scrollToBottom(){
-        DispatchQueue.main.async {
-            if self.msgArray.count > 1{
-                let indexPath = IndexPath(row: self.msgArray.count-1, section: 0)
-                self.chatMsgList.scrollToRow(at: indexPath, at: .bottom, animated: true)
-            }
-
+    @objc func clickOnNavigationBar(_ sender: UITapGestureRecognizer){
+        if chatType == "group"{
+            let vc = storyboard?.instantiateViewController(withIdentifier: "GroupProfileViewController") as? GroupProfileViewController
+            self.navigationController?.pushViewController(vc!, animated: true)
+            vc?.groupDetail = groupDetail
+            vc?.participantsList = participants
+            
         }
+        
     }
-    
-    private func bottomScrollWhenKeyboardOpen(){
-        chatMsgList.setContentOffset(CGPoint(x: 0, y:self.chatMsgList.contentSize.height - self.chatMsgList.bounds.size.height), animated: false)
-    }
-
     
 }
 
+//MARK: Alerts
 extension ChatRoomViewController{
     //MARK: cancel button
-
+    
     @objc func cancelButton(){
         self.selectionEnable = false
         self.navigationItem.rightBarButtonItems = nil
-
+        
         self.chatMsgList.reloadData()
     }
     //MARK: Delete Button
     @objc func deleteButton(){
         Manager.shared.deleteMessage(conversationId: roomId, selectedMsgArray: selectedMsgId)
-                self.navigationItem.rightBarButtonItems = nil
-                self.deleteMessage()
+        self.navigationItem.rightBarButtonItems = nil
+        self.deleteMessage()
     }
     
     //MARK: show alert
-   private func deleteMessage(){
+    private func deleteMessage(){
         self.selectionEnable = false
         for i in self.selectedMsgId{
             self.msgArray.removeAll(where: {$0.msgId == i.msgId})
         }
-       let lastMessage =  self.msgArray.last
+        let lastMessage =  self.msgArray.last
         if lastMessage != nil {
             Manager.shared.updateConversationLastMessage(messageData: lastMessage!, conversationId: self.roomId)
         }
@@ -189,18 +203,7 @@ extension ChatRoomViewController{
         self.chatMsgList.reloadData()
     }
     
-    @objc func clickOnNavigationBar(_ sender: UITapGestureRecognizer){
-        print("tapped")
-        if chatType == "group"{
-            let vc = storyboard?.instantiateViewController(withIdentifier: "GroupProfileViewController") as? GroupProfileViewController
-            self.navigationController?.pushViewController(vc!, animated: true)
-            vc?.groupDetail = groupDetail
-            
-            vc?.participantsList = participants
-           
-        }
     
-    }
 }
 
 //MARK: message table view
@@ -212,7 +215,7 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
-                longPress.minimumPressDuration = 0.5
+        longPress.minimumPressDuration = 0.5
         guard let cell = chatMsgList.dequeueReusableCell(withIdentifier: BubbleView.identifier, for: indexPath) as? BubbleView else{
             return UITableViewCell()
         }
@@ -222,7 +225,7 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
         cell.message.text = row.message
         cell.contentView.tag = indexPath.row
         cell.checkBox.isHidden = selectionEnable ? false : true
-       
+        
         cell.contentView.addGestureRecognizer(longPress)
         let msgId = msgArray[indexPath.row].msgId
         cell.checkBox.image = selectedMsgId.contains(where: {$0.msgId == msgId} ) ? UIImage(systemName: "checkmark.rectangle.fill") : UIImage(systemName: "rectangle")
@@ -252,23 +255,23 @@ extension ChatRoomViewController: UITableViewDataSource, UITableViewDelegate{
     }
     
 }
- 
+
 
 //MARK: Keyboard
 
 extension ChatRoomViewController{
     @objc func keyboardWillShow(notification: NSNotification) {
-
+        
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-           return
+            return
         }
-      scrollToBottom()
+        scrollToBottom()
         let bottomSafeArea = self.view.safeAreaInsets.bottom
         self.textfieldBottomConstraints.constant = keyboardSize.height - bottomSafeArea
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-     self.textfieldBottomConstraints.constant = 0
+        self.textfieldBottomConstraints.constant = 0
     }
     
 }
